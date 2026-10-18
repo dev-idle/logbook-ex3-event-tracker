@@ -1,0 +1,10 @@
+# Android Studio writes LF on every platform, so keep LF in the working tree
+# even where core.autocrlf is enabled.
+* text=auto eol=lf
+
+# Windows batch files need CRLF to run correctly.
+*.bat text eol=crlf
+
+*.jar binary
+*.png binary
+*.webp binary
