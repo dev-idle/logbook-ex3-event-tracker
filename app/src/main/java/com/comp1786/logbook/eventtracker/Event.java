@@ -1,0 +1,75 @@
+package com.comp1786.logbook.eventtracker;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+/**
+ * An event entry. Serializable so it can be passed between activities in an Intent.
+ */
+public final class Event implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private final String name;
+    private final LocalDate date;
+    private final LocalTime startTime;
+    private final LocalTime endTime;
+    private final String location;
+    private final String organizer;
+    private final EventType type;
+
+    public Event(String name, LocalDate date, LocalTime startTime, LocalTime endTime,
+            String location, String organizer, EventType type) {
+        this.name = name;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.location = location;
+        this.organizer = organizer;
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public LocalDateTime getStart() {
+        return date.atTime(startTime);
+    }
+
+    public LocalDateTime getEnd() {
+        LocalDateTime end = date.atTime(endTime);
+        return endsNextDay() ? end.plusDays(1) : end;
+    }
+
+    /** Returns true when the event runs past midnight and ends on the next day. */
+    public boolean endsNextDay() {
+        return EventTimes.endsNextDay(startTime, endTime);
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    public EventType getType() {
+        return type;
+    }
+}

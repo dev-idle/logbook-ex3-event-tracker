@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Two columns use the width of a landscape screen. -->
+    <integer name="event_list_columns">2</integer>
+</resources>
