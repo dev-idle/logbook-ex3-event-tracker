@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  * An event entry. Serializable so it can be passed between activities in an Intent.
@@ -85,5 +86,25 @@ public final class Event implements Serializable {
 
     public EventStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Event)) {
+            return false;
+        }
+        Event other = (Event) o;
+        return id == other.id && name.equals(other.name) && date.equals(other.date)
+                && startTime.equals(other.startTime) && endTime.equals(other.endTime)
+                && location.equals(other.location) && organizer.equals(other.organizer)
+                && type == other.type && status == other.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, date, startTime, endTime, location, organizer, type, status);
     }
 }

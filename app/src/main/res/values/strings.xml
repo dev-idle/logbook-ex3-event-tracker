@@ -37,8 +37,11 @@
     <string name="description_time_range_next_day">From %1$s to %2$s the next day, %3$s</string>
     <string name="button_add_event">Add event</string>
     <string name="message_event_added">Event added</string>
+    <string name="message_event_updated">Event updated</string>
+    <string name="description_edit_event">Edit event</string>
 
     <string name="title_add_event">Add event</string>
+    <string name="title_edit_event">Edit event</string>
     <string name="label_name">Event name</string>
     <string name="label_date">Event date</string>
     <string name="label_start_time">Start time</string>
@@ -52,9 +55,12 @@
     <string name="description_choose_date">Choose a date</string>
     <string name="description_navigate_up">Navigate up</string>
     <string name="button_save_event">Save event</string>
+    <string name="button_save_changes">Save changes</string>
 
     <string name="discard_title">Discard this event?</string>
     <string name="discard_message">The details you entered will be lost.</string>
+    <string name="discard_changes_title">Discard your changes?</string>
+    <string name="discard_changes_message">The changes you made will be lost.</string>
     <string name="button_discard">Discard</string>
     <string name="button_keep_editing">Keep editing</string>
 

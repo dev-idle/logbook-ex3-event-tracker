@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Paint;
+import android.graphics.drawable.RippleDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +27,7 @@ import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Shows the events as tickets with all their details, under a heading for each month.
@@ -33,7 +37,12 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int TYPE_MONTH = 0;
     private static final int TYPE_EVENT = 1;
 
+    private final OnEventClickListener listener;
     private List<Row> rows = new ArrayList<>();
+
+    public EventAdapter(OnEventClickListener listener) {
+        this.listener = listener;
+    }
 
     /** Shows the events, which must be in start order, as they stand at the given time. */
     public void setEvents(List<Event> events, LocalDateTime now) {
@@ -70,7 +79,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (viewType == TYPE_MONTH) {
             return new MonthViewHolder(inflater.inflate(R.layout.item_month, parent, false));
         }
-        return new EventViewHolder(inflater.inflate(R.layout.item_event, parent, false));
+        EventViewHolder holder =
+                new EventViewHolder(inflater.inflate(R.layout.item_event, parent, false));
+        holder.itemView.setOnClickListener(v -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onEventClick(rows.get(position).event);
+            }
+        });
+        return holder;
     }
 
     @Override
@@ -322,9 +339,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public boolean areContentsTheSame(int oldPosition, int newPosition) {
             Row oldRow = oldRows.get(oldPosition);
             Row newRow = newRows.get(newPosition);
-            // States and countdowns change as time passes and as earlier events are added.
-            return oldRow.state == newRow.state && oldRow.daysAway == newRow.daysAway;
+            // States and countdowns change as time passes, and details when an event is edited.
+            return oldRow.state == newRow.state && oldRow.daysAway == newRow.daysAway
+                    && Objects.equals(oldRow.event, newRow.event);
         }
+    }
+
+    /** Called when a ticket is tapped. */
+    public interface OnEventClickListener {
+        void onEventClick(Event event);
     }
 
     /** The view of one month heading. */
@@ -360,7 +383,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             ticket = new TicketDrawable(itemView.getContext());
-            itemView.setBackground(ticket);
+            int rippleColor = MaterialColors.getColor(
+                    itemView, androidx.appcompat.R.attr.colorControlHighlight);
+            // Without a mask, the ripple is clipped to the ticket shape.
+            itemView.setBackground(
+                    new RippleDrawable(ColorStateList.valueOf(rippleColor), ticket, null));
+            // Screen readers say "Double tap to edit event".
+            ViewCompat.replaceAccessibilityAction(itemView, AccessibilityActionCompat.ACTION_CLICK,
+                    itemView.getContext().getString(R.string.description_edit_event), null);
             dateStub = itemView.findViewById(R.id.date_stub);
             monthText = itemView.findViewById(R.id.event_month);
             dayText = itemView.findViewById(R.id.event_day);

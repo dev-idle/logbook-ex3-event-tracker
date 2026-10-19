@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Checks the values entered for a new event, one field at a time.
+ * Checks the values entered for an event, one field at a time.
  */
 public final class EventValidator {
 
@@ -83,10 +83,12 @@ public final class EventValidator {
         return Result.valid(status);
     }
 
-    /** Returns true if an event with the same name, ignoring case, is already on that date. */
-    public static boolean isDuplicate(String name, LocalDate date, List<Event> events) {
+    /** Returns true if an event besides ignoredId has this name on that date, ignoring case. */
+    public static boolean isDuplicate(String name, LocalDate date, long ignoredId,
+            List<Event> events) {
         for (Event event : events) {
-            if (event.getDate().equals(date) && event.getName().equalsIgnoreCase(name)) {
+            if (event.getId() != ignoredId && event.getDate().equals(date)
+                    && event.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }

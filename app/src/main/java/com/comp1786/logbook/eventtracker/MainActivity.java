@@ -6,9 +6,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -36,13 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private EventAdapter adapter;
 
     private final ActivityResultLauncher<Intent> addEventLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                Intent data = result.getData();
-                if (result.getResultCode() == RESULT_OK && data != null) {
-                    showSavedEvent(
-                            data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
-                }
-            });
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> showSavedEvent(result, R.string.message_event_added));
+    private final ActivityResultLauncher<Intent> editEventLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> showSavedEvent(result, R.string.message_event_updated));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         bindViews();
         setSupportActionBar(toolbar);
         database = new EventDatabase(this);
-        adapter = new EventAdapter();
+        adapter = new EventAdapter(this::openEditEvent);
         GridLayoutManager layoutManager = new GridLayoutManager(this,
                 getResources().getInteger(R.integer.event_list_columns));
         // Month headings span every column.
@@ -112,10 +112,20 @@ public class MainActivity extends AppCompatActivity {
         addEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class));
     }
 
-    /** Scrolls to an event that was just saved and confirms it. */
-    private void showSavedEvent(long id) {
+    private void openEditEvent(Event event) {
+        editEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class)
+                .putExtra(AddEventActivity.EXTRA_EVENT, event));
+    }
+
+    /** Scrolls to an event that was just saved and confirms it with the message. */
+    private void showSavedEvent(ActivityResult result, @StringRes int messageRes) {
+        Intent data = result.getData();
+        if (result.getResultCode() != RESULT_OK || data == null) {
+            return;
+        }
+        long id = data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID);
         eventList.scrollToPosition(adapter.positionOf(id));
-        Toast.makeText(this, R.string.message_event_added, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show();
     }
 
     /** Shows the events and their number, or the empty state when there are none. */

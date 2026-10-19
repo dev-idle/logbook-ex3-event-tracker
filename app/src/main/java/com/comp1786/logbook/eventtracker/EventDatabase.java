@@ -33,6 +33,8 @@ public class EventDatabase extends SQLiteOpenHelper {
     private static final String INSERT = "INSERT INTO Event "
             + "(Name, Date, StartTime, EndTime, Location, Organizer, Type, Status) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE Event SET Name = ?, Date = ?, StartTime = ?, "
+            + "EndTime = ?, Location = ?, Organizer = ?, Type = ?, Status = ? WHERE ID = ?";
     private static final String SELECT_ALL = "SELECT ID, Name, Date, StartTime, EndTime, "
             + "Location, Organizer, Type, Status FROM Event ORDER BY Date, StartTime, ID";
     // An event ends on the next day when its end time is not after its start time.
@@ -62,6 +64,15 @@ public class EventDatabase extends SQLiteOpenHelper {
         try (SQLiteStatement statement = getWritableDatabase().compileStatement(INSERT)) {
             bindDetails(statement, event);
             return statement.executeInsert();
+        }
+    }
+
+    /** Saves the changes to an event that is already saved. */
+    public void updateEvent(Event event) {
+        try (SQLiteStatement statement = getWritableDatabase().compileStatement(UPDATE)) {
+            bindDetails(statement, event);
+            statement.bindLong(9, event.getId());
+            statement.executeUpdateDelete();
         }
     }
 
