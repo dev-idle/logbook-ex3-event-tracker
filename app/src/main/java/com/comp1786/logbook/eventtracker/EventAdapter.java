@@ -42,10 +42,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         diff.dispatchUpdatesTo(this);
     }
 
-    /** Returns the position of the event in the list, or NO_POSITION if it is not shown. */
-    public int positionOf(Event event) {
+    /** Returns the position of the event with this ID, or NO_POSITION if it is not shown. */
+    public int positionOf(long id) {
         for (int i = 0; i < rows.size(); i++) {
-            if (rows.get(i).event == event) {
+            Event event = rows.get(i).event;
+            if (event != null && event.getId() == id) {
                 return i;
             }
         }
@@ -284,8 +285,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public boolean areItemsTheSame(int oldPosition, int newPosition) {
             Row oldRow = oldRows.get(oldPosition);
             Row newRow = newRows.get(newPosition);
-            // Events cannot be edited, so an event keeps the same object while it is listed.
-            return oldRow.event == newRow.event && oldRow.month.equals(newRow.month);
+            if (oldRow.event == null || newRow.event == null) {
+                return oldRow.event == newRow.event && oldRow.month.equals(newRow.month);
+            }
+            // Events are read from the database as new objects, so they are matched by ID.
+            return oldRow.event.getId() == newRow.event.getId();
         }
 
         @Override

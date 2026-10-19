@@ -10,8 +10,12 @@ import java.time.LocalTime;
  */
 public final class Event implements Serializable {
 
+    /** The ID of an event that has not been saved yet. */
+    public static final long NO_ID = 0;
+
     private static final long serialVersionUID = 1L;
 
+    private final long id;
     private final String name;
     private final LocalDate date;
     private final LocalTime startTime;
@@ -20,8 +24,9 @@ public final class Event implements Serializable {
     private final String organizer;
     private final EventType type;
 
-    public Event(String name, LocalDate date, LocalTime startTime, LocalTime endTime,
+    public Event(long id, String name, LocalDate date, LocalTime startTime, LocalTime endTime,
             String location, String organizer, EventType type) {
+        this.id = id;
         this.name = name;
         this.date = date;
         this.startTime = startTime;
@@ -29,6 +34,10 @@ public final class Event implements Serializable {
         this.location = location;
         this.organizer = organizer;
         this.type = type;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

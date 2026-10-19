@@ -23,19 +23,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * The form for adding an event. The new event is returned to MainActivity as a result.
+ * The form for adding an event. It saves the event and returns its ID to MainActivity.
  */
 public class AddEventActivity extends AppCompatActivity {
 
-    /** Result extra holding the new Event. */
-    public static final String EXTRA_EVENT = "event";
-    /** Intent extra holding the existing events, used to find duplicates. */
-    public static final String EXTRA_EVENTS = "events";
+    /** Result extra holding the ID of the saved event. */
+    public static final String EXTRA_EVENT_ID = "event_id";
 
     private static final String STATE_TYPE = "type";
     private static final String STATE_DISCARD_SHOWN = "discard_shown";
@@ -62,7 +58,7 @@ public class AddEventActivity extends AppCompatActivity {
     private EditText organizerInput;
     private DropdownField typeInput;
 
-    private List<Event> existingEvents;
+    private EventDatabase database;
     private EventType selectedType;
     private LocalTime selectedStartTime;
     private AlertDialog discardDialog;
@@ -91,8 +87,7 @@ public class AddEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         getOnBackPressedDispatcher().addCallback(this, discardCallback);
-        Event[] events = getIntent().getSerializableExtra(EXTRA_EVENTS, Event[].class);
-        existingEvents = events != null ? Arrays.asList(events) : Collections.emptyList();
+        database = new EventDatabase(this);
         buildTypeMenu();
         buildTimeMenus();
 
@@ -151,6 +146,7 @@ public class AddEventActivity extends AppCompatActivity {
         if (discardDialog != null) {
             discardDialog.dismiss();
         }
+        database.close();
         super.onDestroy();
     }
 
@@ -268,7 +264,8 @@ public class AddEventActivity extends AppCompatActivity {
                 organizer.isValid() ? null : getString(R.string.error_organizer_required));
         typeLayout.setError(type.isValid() ? null : getString(R.string.error_type_required));
         if (name.isValid() && date.isValid()
-                && EventValidator.isDuplicate(name.getValue(), date.getValue(), existingEvents)) {
+                && EventValidator.isDuplicate(
+                        name.getValue(), date.getValue(), database.getAllEvents())) {
             nameLayout.setError(getString(R.string.error_name_duplicate));
         }
 
@@ -278,9 +275,10 @@ public class AddEventActivity extends AppCompatActivity {
                 return;
             }
         }
-        Event event = new Event(name.getValue(), date.getValue(), startTime.getValue(),
+        Event event = new Event(Event.NO_ID, name.getValue(), date.getValue(), startTime.getValue(),
                 endTime.getValue(), location.getValue(), organizer.getValue(), type.getValue());
-        setResult(RESULT_OK, new Intent().putExtra(EXTRA_EVENT, event));
+        long id = database.insertEvent(event);
+        setResult(RESULT_OK, new Intent().putExtra(EXTRA_EVENT_ID, id));
         finish();
     }
 

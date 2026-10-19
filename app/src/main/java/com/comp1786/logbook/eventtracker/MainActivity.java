@@ -21,12 +21,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String STATE_EVENTS = "events";
 
     private MaterialToolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbar;
@@ -34,14 +31,15 @@ public class MainActivity extends AppCompatActivity {
     private View emptyView;
     private ExtendedFloatingActionButton addButton;
 
-    private final ArrayList<Event> events = new ArrayList<>();
+    private EventDatabase database;
     private EventAdapter adapter;
 
     private final ActivityResultLauncher<Intent> addEventLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
                 Intent data = result.getData();
                 if (result.getResultCode() == RESULT_OK && data != null) {
-                    addEvent(data.getSerializableExtra(AddEventActivity.EXTRA_EVENT, Event.class));
+                    showSavedEvent(
+                            data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
                 }
             });
 
@@ -60,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         bindViews();
         setSupportActionBar(toolbar);
+        database = new EventDatabase(this);
         adapter = new EventAdapter();
         GridLayoutManager layoutManager = new GridLayoutManager(this,
                 getResources().getInteger(R.integer.event_list_columns));
@@ -90,24 +89,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Times move on while the app is away, so states and countdowns are worked out again.
+        // Reloads the saved events, whose states and countdowns change as time passes.
         showEvents();
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(STATE_EVENTS, events.toArray(new Event[0]));
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Event[] saved = savedInstanceState.getSerializable(STATE_EVENTS, Event[].class);
-        if (saved != null) {
-            events.addAll(Arrays.asList(saved));
-            showEvents();
-        }
+    protected void onDestroy() {
+        database.close();
+        super.onDestroy();
     }
 
     private void bindViews() {
@@ -119,26 +108,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openAddEvent() {
-        Intent intent = new Intent(MainActivity.this, AddEventActivity.class);
-        intent.putExtra(AddEventActivity.EXTRA_EVENTS, events.toArray(new Event[0]));
-        addEventLauncher.launch(intent);
+        addEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class));
     }
 
-    /** Adds an event in start order, after any events that start at the same time. */
-    private void addEvent(Event event) {
-        int position = 0;
-        while (position < events.size()
-                && !events.get(position).getStart().isAfter(event.getStart())) {
-            position++;
-        }
-        events.add(position, event);
-        showEvents();
-        eventList.scrollToPosition(adapter.positionOf(event));
+    /** Scrolls to an event that was just saved and confirms it. */
+    private void showSavedEvent(long id) {
+        eventList.scrollToPosition(adapter.positionOf(id));
         Toast.makeText(this, R.string.message_event_added, Toast.LENGTH_SHORT).show();
     }
 
     /** Shows the events and their number, or the empty state when there are none. */
     private void showEvents() {
+        List<Event> events = database.getAllEvents();
         adapter.setEvents(events);
         boolean empty = events.isEmpty();
         emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
