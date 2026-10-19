@@ -21,6 +21,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -119,8 +120,12 @@ public class MainActivity extends AppCompatActivity {
 
     /** Shows the events and their number, or the empty state when there are none. */
     private void showEvents() {
+        // Upcoming events that have ended become completed before they are shown.
+        LocalDateTime now = LocalDateTime.now();
+        database.completeEndedEvents(now);
         List<Event> events = database.getAllEvents();
-        adapter.setEvents(events);
+        // The same time, so every ticket shown as ended is also completed.
+        adapter.setEvents(events, now);
         boolean empty = events.isEmpty();
         emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
         collapsingToolbar.setSubtitle(empty ? null : getResources().getQuantityString(

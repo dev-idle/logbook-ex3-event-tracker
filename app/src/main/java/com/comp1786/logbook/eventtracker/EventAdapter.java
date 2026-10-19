@@ -35,9 +35,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private List<Row> rows = new ArrayList<>();
 
-    /** Shows the events, which must be in start order, as they stand at the current time. */
-    public void setEvents(List<Event> events) {
-        List<Row> newRows = buildRows(events, LocalDateTime.now());
+    /** Shows the events, which must be in start order, as they stand at the given time. */
+    public void setEvents(List<Event> events, LocalDateTime now) {
+        List<Row> newRows = buildRows(events, now);
         DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new RowDiff(rows, newRows));
         rows = newRows;
         diff.dispatchUpdatesTo(this);

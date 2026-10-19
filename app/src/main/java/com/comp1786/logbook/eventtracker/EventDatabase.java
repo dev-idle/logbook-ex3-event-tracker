@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class EventDatabase extends SQLiteOpenHelper {
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_ALL = "SELECT ID, Name, Date, StartTime, EndTime, "
             + "Location, Organizer, Type, Status FROM Event ORDER BY Date, StartTime, ID";
+    // An event ends on the next day when its end time is not after its start time.
+    private static final String COMPLETE_ENDED = "UPDATE Event SET Status = ? "
+            + "WHERE Status = ? AND (CASE WHEN EndTime > StartTime THEN Date "
+            + "ELSE date(Date, '+1 day') END) || ' ' || EndTime <= ?";
 
     public EventDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,6 +62,18 @@ public class EventDatabase extends SQLiteOpenHelper {
         try (SQLiteStatement statement = getWritableDatabase().compileStatement(INSERT)) {
             bindDetails(statement, event);
             return statement.executeInsert();
+        }
+    }
+
+    /** Marks upcoming events that have ended by the given time as completed. */
+    public void completeEndedEvents(LocalDateTime now) {
+        try (SQLiteStatement statement =
+                getWritableDatabase().compileStatement(COMPLETE_ENDED)) {
+            statement.bindString(1, EventStatus.COMPLETED.name());
+            statement.bindString(2, EventStatus.UPCOMING.name());
+            statement.bindString(3,
+                    now.toLocalDate() + " " + EventTimes.format(now.toLocalTime()));
+            statement.executeUpdateDelete();
         }
     }
 
