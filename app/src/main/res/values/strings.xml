@@ -7,13 +7,14 @@
         <item quantity="one">%d event</item>
         <item quantity="other">%d events</item>
     </plurals>
-    <string name="countdown_live">Happening now</string>
-    <string name="countdown_today">Today</string>
-    <string name="countdown_ended_today">Ended today</string>
-    <string name="countdown_tomorrow">Tomorrow</string>
-    <string name="countdown_yesterday">Yesterday</string>
-    <string name="countdown_in">In %1$s</string>
-    <string name="countdown_ago">%1$s ago</string>
+    <!-- A ticket's status with when the event is, such as "Upcoming in 4 days" -->
+    <string name="status_live">Happening now</string>
+    <string name="status_upcoming_today">Upcoming today</string>
+    <string name="status_upcoming_tomorrow">Upcoming tomorrow</string>
+    <string name="status_upcoming_in">Upcoming in %1$s</string>
+    <string name="status_completed_today">Completed today</string>
+    <string name="status_completed_yesterday">Completed yesterday</string>
+    <string name="status_completed_ago">Completed %1$s ago</string>
     <plurals name="duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
@@ -46,6 +47,7 @@
     <string name="label_location">Event location</string>
     <string name="label_organizer">Event organizer</string>
     <string name="label_type">Event type</string>
+    <string name="label_status">Event status</string>
     <string name="hint_date_format" translatable="false">DD/MM/YYYY</string>
     <string name="description_choose_date">Choose a date</string>
     <string name="description_navigate_up">Navigate up</string>
@@ -69,6 +71,8 @@
     <string name="error_location_required">Enter the event location</string>
     <string name="error_organizer_required">Enter the event organizer</string>
     <string name="error_type_required">Select the event type</string>
+    <string name="error_status_not_ended">Select Upcoming or Cancelled, as the event has not ended</string>
+    <string name="error_status_ended">Select Completed or Cancelled, as the event has ended</string>
 
     <!-- Event types from the logbook brief -->
     <string name="type_conference">Conference</string>
@@ -76,6 +80,11 @@
     <string name="type_seminar">Seminar</string>
     <string name="type_social">Social</string>
     <string name="type_other">Other</string>
+
+    <!-- Event statuses from the logbook brief -->
+    <string name="status_upcoming">Upcoming</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_cancelled">Cancelled</string>
 
     <!-- Characters accepted while typing a date -->
     <string name="digits_date" translatable="false">0123456789/</string>

@@ -16,7 +16,7 @@ import java.util.List;
 public class EventDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "events.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Dates are stored as YYYY-MM-DD and times as HH:MM, so text order is time order.
     private static final String CREATE_TABLE = "CREATE TABLE Event ("
@@ -27,12 +27,13 @@ public class EventDatabase extends SQLiteOpenHelper {
             + "EndTime TEXT NOT NULL, "
             + "Location TEXT NOT NULL, "
             + "Organizer TEXT NOT NULL, "
-            + "Type TEXT NOT NULL)";
+            + "Type TEXT NOT NULL, "
+            + "Status TEXT NOT NULL)";
     private static final String INSERT = "INSERT INTO Event "
-            + "(Name, Date, StartTime, EndTime, Location, Organizer, Type) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            + "(Name, Date, StartTime, EndTime, Location, Organizer, Type, Status) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_ALL = "SELECT ID, Name, Date, StartTime, EndTime, "
-            + "Location, Organizer, Type FROM Event ORDER BY Date, StartTime, ID";
+            + "Location, Organizer, Type, Status FROM Event ORDER BY Date, StartTime, ID";
 
     public EventDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -45,7 +46,10 @@ public class EventDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Version 1 is the first schema, so there is nothing to migrate yet.
+        if (oldVersion < 2) {
+            // Version 2 adds the status. Events saved before it count as upcoming.
+            db.execSQL("ALTER TABLE Event ADD COLUMN Status TEXT NOT NULL DEFAULT 'UPCOMING'");
+        }
     }
 
     /** Saves a new event and returns its ID. */
@@ -64,13 +68,14 @@ public class EventDatabase extends SQLiteOpenHelper {
                 events.add(new Event(cursor.getLong(0), cursor.getString(1),
                         LocalDate.parse(cursor.getString(2)), EventTimes.parse(cursor.getString(3)),
                         EventTimes.parse(cursor.getString(4)), cursor.getString(5),
-                        cursor.getString(6), EventType.valueOf(cursor.getString(7))));
+                        cursor.getString(6), EventType.valueOf(cursor.getString(7)),
+                        EventStatus.valueOf(cursor.getString(8))));
             }
         }
         return events;
     }
 
-    /** Binds the event's details to parameters 1 to 7, in the order of the Event columns. */
+    /** Binds the event's details to parameters 1 to 8, in the order of the Event columns. */
     private static void bindDetails(SQLiteStatement statement, Event event) {
         statement.bindString(1, event.getName());
         statement.bindString(2, event.getDate().toString());
@@ -79,5 +84,6 @@ public class EventDatabase extends SQLiteOpenHelper {
         statement.bindString(5, event.getLocation());
         statement.bindString(6, event.getOrganizer());
         statement.bindString(7, event.getType().name());
+        statement.bindString(8, event.getStatus().name());
     }
 }

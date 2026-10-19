@@ -3,6 +3,8 @@ package com.comp1786.logbook.eventtracker;
 import android.content.res.Resources;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -51,6 +53,12 @@ public final class EventTimes {
     /** Returns true when the end is at or before the start, so it falls on the next day. */
     public static boolean endsNextDay(LocalTime start, LocalTime end) {
         return !end.isAfter(start);
+    }
+
+    /** Returns when an event on this date ends, on the next day if it runs past midnight. */
+    public static LocalDateTime endOn(LocalDate date, LocalTime start, LocalTime end) {
+        LocalDateTime endOnDate = date.atTime(end);
+        return endsNextDay(start, end) ? endOnDate.plusDays(1) : endOnDate;
     }
 
     /** Returns the minutes from start to end, counting an end on the next day. */

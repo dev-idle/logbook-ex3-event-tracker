@@ -72,7 +72,7 @@
         tools:text="@string/type_conference" />
 
     <TextView
-        android:id="@+id/event_countdown"
+        android:id="@+id/event_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_small"
@@ -82,7 +82,15 @@
         app:layout_constraintBaseline_toBaselineOf="@id/type_label"
         app:layout_constraintEnd_toEndOf="@id/event_name"
         app:layout_constraintStart_toEndOf="@id/type_label"
-        tools:text="In 6 days" />
+        tools:text="Upcoming in 6 days" />
+
+    <!-- Below the taller label, so a status that wraps at large text sizes never overlaps. -->
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/labels_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="type_label,event_status" />
 
     <!-- Start and end at either side with the length between, which shortens first. -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -92,7 +100,7 @@
         android:layout_marginTop="@dimen/space_medium"
         app:layout_constraintEnd_toEndOf="@id/event_name"
         app:layout_constraintStart_toStartOf="@id/event_name"
-        app:layout_constraintTop_toBottomOf="@id/type_label"
+        app:layout_constraintTop_toBottomOf="@id/labels_bottom"
         tools:contentDescription="From 19:00 to 23:00, 4 hr">
 
         <TextView

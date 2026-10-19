@@ -3,6 +3,7 @@ package com.comp1786.logbook.eventtracker;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,9 +100,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.monthText.setTextColor(stubTextColor);
         holder.dayText.setTextColor(stubTextColor);
         holder.dayOfWeekText.setTextColor(stubTextColor);
-        holder.countdownText.setTextColor(
-                MaterialColors.getColor(holder.itemView, state.countdownColorAttr));
-        holder.countdownText.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        holder.statusText.setTextColor(
+                MaterialColors.getColor(holder.itemView, state.statusColorAttr));
+        holder.statusText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 state == TicketState.LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
 
         holder.dateStub.setContentDescription(EventDates.formatLong(date));
@@ -110,12 +111,29 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.dayOfWeekText.setText(EventDates.formatShortDayOfWeek(date));
         holder.nameText.setText(event.getName());
         holder.typeLabel.setText(type.getLabelRes());
-        holder.typeLabel.setBackgroundTintList(
-                ColorStateList.valueOf(context.getColor(type.getContainerColorRes())));
-        holder.countdownText.setText(countdown(context, row));
+        holder.statusText.setText(statusText(context, row));
         bindTimes(holder, event);
         holder.locationText.setText(event.getLocation());
         holder.organizerText.setText(event.getOrganizer());
+        bindCancelled(holder, type, state == TicketState.CANCELLED);
+    }
+
+    /** Grays out a cancelled ticket and strikes through its name, or shows it as usual. */
+    private static void bindCancelled(EventViewHolder holder, EventType type, boolean cancelled) {
+        Context context = holder.itemView.getContext();
+        int textColor = MaterialColors.getColor(holder.itemView, cancelled
+                ? com.google.android.material.R.attr.colorOnSurfaceVariant
+                : com.google.android.material.R.attr.colorOnSurface);
+        holder.nameText.setTextColor(textColor);
+        holder.startTimeText.setTextColor(textColor);
+        holder.endTimeText.setTextColor(textColor);
+        int flags = holder.nameText.getPaintFlags();
+        holder.nameText.setPaintFlags(cancelled
+                ? flags | Paint.STRIKE_THRU_TEXT_FLAG : flags & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        holder.typeLabel.setBackgroundTintList(ColorStateList.valueOf(cancelled
+                ? MaterialColors.getColor(holder.itemView,
+                        com.google.android.material.R.attr.colorSurfaceContainerHighest)
+                : context.getColor(type.getContainerColorRes())));
     }
 
     /** Shows the start, end and length like a boarding pass, read out as one sentence. */
@@ -134,21 +152,23 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 start, end, length));
     }
 
-    /** Describes when the event is, such as "Happening now", "In 6 days" or "2 months ago". */
-    private static String countdown(Context context, Row row) {
+    /** Describes the status with when the event is, such as "Upcoming in 6 days". */
+    private static String statusText(Context context, Row row) {
         if (row.state == TicketState.LIVE) {
-            return context.getString(R.string.countdown_live);
+            return context.getString(R.string.status_live);
+        } else if (row.state == TicketState.CANCELLED) {
+            return context.getString(R.string.status_cancelled);
         }
         long days = row.daysAway;
         LocalDate date = countdownDate(row.event, row.state);
         LocalDate today = date.minusDays(days);
         if (days == 0) {
             return context.getString(row.state == TicketState.PAST
-                    ? R.string.countdown_ended_today : R.string.countdown_today);
+                    ? R.string.status_completed_today : R.string.status_upcoming_today);
         } else if (days == 1) {
-            return context.getString(R.string.countdown_tomorrow);
+            return context.getString(R.string.status_upcoming_tomorrow);
         } else if (days == -1) {
-            return context.getString(R.string.countdown_yesterday);
+            return context.getString(R.string.status_completed_yesterday);
         }
         Period period = days > 0 ? Period.between(today, date) : Period.between(date, today);
         Resources res = context.getResources();
@@ -163,8 +183,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             duration = res.getQuantityString(
                     R.plurals.duration_days, period.getDays(), period.getDays());
         }
-        return context.getString(days > 0 ? R.string.countdown_in : R.string.countdown_ago,
-                duration);
+        return context.getString(days > 0
+                ? R.string.status_upcoming_in : R.string.status_completed_ago, duration);
     }
 
     /** Adds month headings and works out the state of each event at the given time. */
@@ -205,13 +225,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private static TicketState stateAt(Event event, LocalDateTime now) {
-        if (!event.getEnd().isAfter(now)) {
+        if (event.getStatus() == EventStatus.CANCELLED) {
+            return TicketState.CANCELLED;
+        } else if (!event.getEnd().isAfter(now)) {
             return TicketState.PAST;
         }
         return event.getStart().isAfter(now) ? TicketState.UPCOMING : TicketState.LIVE;
     }
 
-    /** Where an event is in time, with the ticket colors that show it. */
+    /** Where an event is in time, or that it was cancelled, with the ticket colors that show it. */
     private enum TicketState {
 
         LIVE(androidx.appcompat.R.attr.colorPrimary,
@@ -225,20 +247,24 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 com.google.android.material.R.attr.colorOnSurfaceVariant),
         PAST(com.google.android.material.R.attr.colorSurfaceContainerHighest,
                 com.google.android.material.R.attr.colorOnSurfaceVariant,
-                com.google.android.material.R.attr.colorOnSurfaceVariant);
+                com.google.android.material.R.attr.colorOnSurfaceVariant),
+        // The only status in color, as the one that does not follow from the time.
+        CANCELLED(com.google.android.material.R.attr.colorSurfaceContainerHighest,
+                com.google.android.material.R.attr.colorOnSurfaceVariant,
+                androidx.appcompat.R.attr.colorError);
 
         @AttrRes
         private final int stubColorAttr;
         @AttrRes
         private final int stubTextColorAttr;
         @AttrRes
-        private final int countdownColorAttr;
+        private final int statusColorAttr;
 
         TicketState(@AttrRes int stubColorAttr, @AttrRes int stubTextColorAttr,
-                @AttrRes int countdownColorAttr) {
+                @AttrRes int statusColorAttr) {
             this.stubColorAttr = stubColorAttr;
             this.stubTextColorAttr = stubTextColorAttr;
-            this.countdownColorAttr = countdownColorAttr;
+            this.statusColorAttr = statusColorAttr;
         }
     }
 
@@ -322,7 +348,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private final TextView dayOfWeekText;
         private final TextView nameText;
         private final TextView typeLabel;
-        private final TextView countdownText;
+        private final TextView statusText;
         private final View timeRow;
         private final TextView startTimeText;
         private final TextView endTimeText;
@@ -341,7 +367,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             dayOfWeekText = itemView.findViewById(R.id.event_day_of_week);
             nameText = itemView.findViewById(R.id.event_name);
             typeLabel = itemView.findViewById(R.id.type_label);
-            countdownText = itemView.findViewById(R.id.event_countdown);
+            statusText = itemView.findViewById(R.id.event_status);
             timeRow = itemView.findViewById(R.id.time_row);
             startTimeText = itemView.findViewById(R.id.start_time);
             endTimeText = itemView.findViewById(R.id.end_time);

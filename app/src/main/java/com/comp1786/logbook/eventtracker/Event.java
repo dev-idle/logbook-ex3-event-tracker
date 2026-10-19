@@ -23,9 +23,10 @@ public final class Event implements Serializable {
     private final String location;
     private final String organizer;
     private final EventType type;
+    private final EventStatus status;
 
     public Event(long id, String name, LocalDate date, LocalTime startTime, LocalTime endTime,
-            String location, String organizer, EventType type) {
+            String location, String organizer, EventType type, EventStatus status) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -34,6 +35,7 @@ public final class Event implements Serializable {
         this.location = location;
         this.organizer = organizer;
         this.type = type;
+        this.status = status;
     }
 
     public long getId() {
@@ -61,8 +63,7 @@ public final class Event implements Serializable {
     }
 
     public LocalDateTime getEnd() {
-        LocalDateTime end = date.atTime(endTime);
-        return endsNextDay() ? end.plusDays(1) : end;
+        return EventTimes.endOn(date, startTime, endTime);
     }
 
     /** Returns true when the event runs past midnight and ends on the next day. */
@@ -80,5 +81,9 @@ public final class Event implements Serializable {
 
     public EventType getType() {
         return type;
+    }
+
+    public EventStatus getStatus() {
+        return status;
     }
 }

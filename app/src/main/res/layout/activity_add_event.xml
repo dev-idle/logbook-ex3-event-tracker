@@ -168,6 +168,24 @@
                     android:saveEnabled="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- AddEventActivity sets the items from EventStatus and starts at Upcoming. -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/status_layout"
+                style="@style/Widget.EventTracker.DropdownField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_small"
+                android:hint="@string/label_status">
+
+                <com.comp1786.logbook.eventtracker.DropdownField
+                    android:id="@+id/status_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="none"
+                    android:saveEnabled="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <Button
                 android:id="@+id/save_button"
                 style="@style/Widget.EventTracker.Button"

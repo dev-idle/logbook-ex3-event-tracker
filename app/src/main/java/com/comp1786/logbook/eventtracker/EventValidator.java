@@ -1,6 +1,7 @@
 package com.comp1786.logbook.eventtracker;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -12,7 +13,8 @@ public final class EventValidator {
 
     /** Reasons an input is rejected. */
     public enum Error {
-        EMPTY, WRONG_DATE_FORMAT, NOT_A_REAL_DATE, DATE_OUT_OF_RANGE, END_SAME_AS_START
+        EMPTY, WRONG_DATE_FORMAT, NOT_A_REAL_DATE, DATE_OUT_OF_RANGE, END_SAME_AS_START,
+        COMPLETED_BEFORE_END, UPCOMING_AFTER_END
     }
 
     // One or two digits for the day and month and four for the year, such as "5/3/2026".
@@ -64,6 +66,21 @@ public final class EventValidator {
     /** Validates the type chosen from the list, which is null until the user picks one. */
     public static Result<EventType> validateType(EventType type) {
         return type == null ? Result.invalid(Error.EMPTY) : Result.valid(type);
+    }
+
+    /** Validates a status: completed only after the end, if known, and upcoming only before. */
+    public static Result<EventStatus> validateStatus(EventStatus status, LocalDateTime end,
+            LocalDateTime now) {
+        if (end != null) {
+            boolean ended = !end.isAfter(now);
+            if (status == EventStatus.COMPLETED && !ended) {
+                return Result.invalid(Error.COMPLETED_BEFORE_END);
+            }
+            if (status == EventStatus.UPCOMING && ended) {
+                return Result.invalid(Error.UPCOMING_AFTER_END);
+            }
+        }
+        return Result.valid(status);
     }
 
     /** Returns true if an event with the same name, ignoring case, is already on that date. */
