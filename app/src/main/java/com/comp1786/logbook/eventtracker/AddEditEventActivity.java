@@ -243,10 +243,11 @@ public class AddEditEventActivity extends AppCompatActivity {
         buildEndMenu(null);
     }
 
-    /** Offers end times after the start, running past midnight, and opens an hour after it. */
+    /** Offers end times after the start, past midnight too, or every time until one is chosen. */
     private void buildEndMenu(@Nullable LocalTime start) {
         LocalTime from = start != null ? start : DEFAULT_START_TIME;
-        endTimeInput.setSimpleItems(labelsOf(EventTimes.slotsAfter(from)));
+        endTimeInput.setSimpleItems(labelsOf(
+                start != null ? EventTimes.slotsAfter(start) : EventTimes.allSlots()));
         endTimeInput.setPreferredItem(EventTimes.format(from.plus(DEFAULT_LENGTH)));
     }
 

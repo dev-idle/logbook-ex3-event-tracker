@@ -40,7 +40,7 @@ public final class EventTimes {
         return time.format(FORMAT);
     }
 
-    /** Returns the start times on offer: 00:00, 00:15 and so on to 23:45. */
+    /** Returns every time on offer: 00:00, 00:15 and so on to 23:45. */
     public static List<LocalTime> allSlots() {
         return slotsFrom(LocalTime.MIDNIGHT, SLOTS_PER_DAY);
     }
