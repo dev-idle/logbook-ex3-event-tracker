@@ -24,7 +24,7 @@
     <string name="empty_completed">No completed events</string>
     <string name="empty_cancelled">No cancelled events</string>
     <string name="empty_filtered_message">Tap the filter again to see every event.</string>
-    <!-- A ticket's status with when the event is, such as "Upcoming in 4 days" -->
+    <!-- A card's status with when the event is, such as "Upcoming in 4 days" -->
     <string name="status_live">Happening now</string>
     <string name="status_upcoming_today">Upcoming today</string>
     <string name="status_upcoming_tomorrow">Upcoming tomorrow</string>
@@ -64,7 +64,7 @@
     <string name="button_undo">Undo</string>
     <string name="description_view_details">View details</string>
 
-    <!-- Selecting tickets to delete several events at once -->
+    <!-- Selecting cards to delete several events at once -->
     <string name="menu_select_events">Select events</string>
     <string name="title_select_events">Select events</string>
     <plurals name="selected_count">

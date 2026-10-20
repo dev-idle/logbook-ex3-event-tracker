@@ -47,7 +47,7 @@
         <item name="colorOnContainer">?attr/colorError</item>
     </style>
 
-    <!-- Messages line up with the tickets and share their corners and container blue. -->
+    <!-- Messages line up with the cards and share their corners and container blue. -->
     <style name="Widget.EventTracker.Snackbar" parent="Widget.Material3.Snackbar">
         <item name="android:layout_margin">@dimen/screen_padding</item>
         <item name="backgroundTint">?attr/colorPrimaryContainer</item>
@@ -68,7 +68,7 @@
         <item name="colorOnContainer">?attr/colorPrimary</item>
     </style>
 
-    <!-- Chosen filters take the container blue of the tickets, not the gray secondary. -->
+    <!-- Chosen filters take the container blue of the cards, not the gray secondary. -->
     <style name="Widget.EventTracker.FilterChip" parent="Widget.Material3.Chip.Filter">
         <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.FilterChip</item>
     </style>
@@ -136,31 +136,31 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
-    <style name="Widget.EventTracker.TicketStub" parent="">
+    <style name="Widget.EventTracker.DatePanel" parent="">
         <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
     </style>
 
-    <style name="Widget.EventTracker.TicketStub.Month">
+    <style name="Widget.EventTracker.DatePanel.Month">
         <item name="android:letterSpacing">0.1</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
     </style>
 
-    <style name="Widget.EventTracker.TicketStub.Day">
+    <style name="Widget.EventTracker.DatePanel.Day">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textAppearance">?attr/textAppearanceHeadlineSmall</item>
     </style>
 
-    <style name="Widget.EventTracker.TicketStub.DayOfWeek">
+    <style name="Widget.EventTracker.DatePanel.DayOfWeek">
         <item name="android:textAppearance">?attr/textAppearanceBodySmall</item>
     </style>
 
-    <style name="Widget.EventTracker.TicketTime" parent="">
+    <style name="Widget.EventTracker.CardTime" parent="">
         <item name="android:textAppearance">?attr/textAppearanceTitleSmall</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="Widget.EventTracker.TicketTimeLine" parent="">
+    <style name="Widget.EventTracker.CardTimeLine" parent="">
         <item name="android:background">?attr/colorOutlineVariant</item>
         <item name="android:layout_marginStart">@dimen/space_small</item>
         <item name="android:layout_marginEnd">@dimen/space_small</item>
@@ -182,7 +182,7 @@
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
 
-    <!-- The day of the month, colored like the ticket stub. -->
+    <!-- The day of the month, colored like the date panel of the card. -->
     <style name="Widget.EventTracker.DetailDay" parent="">
         <item name="android:textAppearance">?attr/textAppearanceDisplayMedium</item>
         <item name="android:textColor">?attr/colorPrimary</item>

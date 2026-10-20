@@ -8,20 +8,20 @@ status.
 ## Features
 
 - Events saved in SQLite and loaded again each time the list is shown.
-- Tap a ticket to see the event in full, as in Exercise 2. Its More options
+- Tap an event card to see the event in full, as in Exercise 2. Its More options
   menu edits the event in the same form used to add one, or deletes it with a
   confirmation dialog and an Undo action.
 - Select several events, from the list's More options menu or by long pressing
-  a ticket, and delete them together.
+  a card, and delete them together.
 - A status for each event: Upcoming, Completed or Cancelled, chosen from a
   dropdown.
 - Upcoming events become Completed once they end.
 - Filter chips [1] that show only the events with one status. The filter is
   not saved, so a new launch shows every saved event.
 - Snackbars [2] that confirm when an event is added, updated or deleted.
-- From Exercise 2: tickets in start order under month headings, the date
+- From Exercise 2: event cards in start order under month headings, the date
   picker and time lists, light and dark themes from seed #2E6FD8 [3], two
-  columns in landscape, and screen reader text for each ticket.
+  columns in landscape, and screen reader text for each card.
 
 ## Validation
 
@@ -40,10 +40,10 @@ Error messages follow the GOV.UK Design System guidance [5].
 
 - New events start as Upcoming.
 - Before the list loads, one UPDATE marks Upcoming events that have ended as
-  Completed. It uses the same time as the tickets, so a ticket never shows an
+  Completed. It uses the same time as the cards, so a card never shows an
   ended event as upcoming.
-- Each ticket shows its status after the type, such as "Upcoming in 4 days" or
-  "Completed 5 days ago". Only "Cancelled" is red, and a cancelled ticket is
+- Each card shows its status after the type, such as "Upcoming in 4 days" or
+  "Completed 5 days ago". Only "Cancelled" is red, and a cancelled card is
   grayed out with its name struck through. It is the only status that does not
   follow from the time.
 
@@ -52,7 +52,7 @@ Error messages follow the GOV.UK Design System guidance [5].
 - Leaving the edit form asks first only if a value has changed. After saving,
   the details screen shows the changes.
 - Undo saves deleted events again under the same IDs.
-- While selecting, tapping a ticket selects it, Select all selects every event
+- While selecting, tapping a card selects it, Select all selects every event
   the filter shows, and Back or the close button stops selecting.
 - If the filter hides an event that was just added, the list shows every event
   again and scrolls to it.
@@ -128,9 +128,9 @@ from the command line:
 | `EventDetailsActivity.java` | One event in full, with Edit and Delete         |
 | `AddEventActivity.java`     | Add and edit form, time lists and errors        |
 | `EventDatabase.java`        | SQLite table, queries and the status update     |
-| `EventAdapter.java`         | Month headings, tickets and selection           |
-| `TicketState.java`          | Ticket states, colors and status phrases        |
-| `TicketDrawable.java`       | Ticket shape with the date stub and perforation |
+| `EventAdapter.java`         | Month headings, cards and selection             |
+| `EventCardState.java`       | Card states, colors and status phrases          |
+| `EventCardDrawable.java`    | Card shape with the date panel and divider      |
 | `Event.java`                | Event model                                     |
 | `EventType.java`            | Event types and their label colors              |
 | `EventStatus.java`          | Event statuses and their filter texts           |

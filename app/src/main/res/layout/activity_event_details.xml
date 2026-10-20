@@ -200,7 +200,7 @@
                     app:layout_constraintTop_toBottomOf="@id/end_label"
                     tools:text="23:00" />
 
-                <!-- Raised beside the end time, like the +1 on the ticket. -->
+                <!-- Raised beside the end time, like the +1 on the card. -->
                 <TextView
                     android:id="@+id/next_day"
                     android:layout_width="wrap_content"

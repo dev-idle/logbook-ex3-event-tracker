@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Lists the saved events as tickets, with a status filter and a way to delete several at once.
+ * Lists the saved events as cards, with a status filter and a way to delete several at once.
  */
 public class MainActivity extends AppCompatActivity implements EventAdapter.OnEventClickListener {
 
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         }
     }
 
-    /** Starts selecting with this ticket, or selects it like a tap while already selecting. */
+    /** Starts selecting with this card, or selects it like a tap while already selecting. */
     @Override
     public void onEventLongClick(Event event) {
         startSelection();
@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         snackbar.show();
     }
 
-    /** Turns the app bar into a selection bar, where tapping a ticket selects it. */
+    /** Turns the app bar into a selection bar, where tapping a card selects it. */
     private void startSelection() {
         if (adapter.isSelecting()) {
             return;
@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         showSelection();
     }
 
-    /** Shows how many tickets are selected, with the matching Select all and delete buttons. */
+    /** Shows how many cards are selected, with the matching Select all and delete buttons. */
     private void showSelection() {
         int count = adapter.getSelectedCount();
         toolbar.setTitle(count == 0 ? getString(R.string.title_select_events)
@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         invalidateOptionsMenu();
     }
 
-    /** Turns the selection bar back into the app bar and deselects every ticket. */
+    /** Turns the selection bar back into the app bar and deselects every card. */
     private void stopSelection() {
         adapter.setSelecting(false);
         selectionCallback.setEnabled(false);
@@ -426,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             return;
         }
         List<Event> events = database.getEvents(filter);
-        // The same time, so every ticket shown as ended is also completed.
+        // The same time, so every card shown as ended is also completed.
         adapter.setEvents(events, now);
         filterBar.setVisibility(nothingSaved ? View.GONE : View.VISIBLE);
         boolean empty = events.isEmpty();
@@ -446,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             // Events no longer shown were deselected, so the number selected may have changed.
             showSelection();
         } else {
-            // The More options button shows only while there are tickets to select.
+            // The More options button shows only while there are cards to select.
             invalidateOptionsMenu();
         }
     }

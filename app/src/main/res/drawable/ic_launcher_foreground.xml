@@ -3,7 +3,7 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- An event ticket like those in the list: a date stub and a notched body -->
+    <!-- An event card like those in the list: a date panel and a notched body -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M32,35H40A4,4 0,0 0,48 35H76A6,6 0,0 1,82 41V67A6,6 0,0 1,76 73H48A4,4 0,0 0,40 73H32A6,6 0,0 1,26 67V41A6,6 0,0 1,32 35Z" />

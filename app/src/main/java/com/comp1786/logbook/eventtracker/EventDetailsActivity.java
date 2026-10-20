@@ -187,9 +187,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Shows the saved event as its ticket would, with the same status text and colors. */
+    /** Shows the saved event as its card would, with the same status text and colors. */
     private void showEvent() {
-        // The same steps and time as the list, so the status matches the ticket.
+        // The same steps and time as the list, so the status matches the card.
         LocalDateTime now = LocalDateTime.now();
         database.completeEndedEvents(now);
         event = database.getEvent(eventId);
@@ -197,8 +197,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             finish();
             return;
         }
-        TicketState state =
-                TicketState.at(event, now, TicketState.nextStart(database.getAllEvents(), now));
+        EventCardState state = EventCardState.at(
+                event, now, EventCardState.nextStart(database.getAllEvents(), now));
         EventType type = event.getType();
         nameText.setText(event.getName());
         typeLabel.setText(type.getLabelRes());
@@ -210,7 +210,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     /** Shows the date and a timeline from start to end, with the end date if it is the next day. */
-    private void showTimes(TicketState state) {
+    private void showTimes(EventCardState state) {
         LocalDate startDate = event.getDate();
         LocalDate endDate = event.getEnd().toLocalDate();
         String start = EventTimes.format(event.getStartTime());
@@ -218,8 +218,8 @@ public class EventDetailsActivity extends AppCompatActivity {
         String length = EventTimes.formatLength(
                 getResources(), event.getStartTime(), event.getEndTime());
         dayText.setText(EventDates.formatDayOfMonth(startDate));
-        boolean over = state == TicketState.PAST || state == TicketState.CANCELLED;
-        // Blue like a colored ticket stub, or gray like a past or cancelled one.
+        boolean over = state == EventCardState.PAST || state == EventCardState.CANCELLED;
+        // Blue like a colored date panel, or gray like a past or cancelled one.
         dayText.setTextColor(MaterialColors.getColor(dayText, over
                 ? com.google.android.material.R.attr.colorOnSurfaceVariant
                 : androidx.appcompat.R.attr.colorPrimary));

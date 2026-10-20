@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Where an event is in time, or that it was cancelled, with the colors and text that show it.
  */
-public enum TicketState {
+public enum EventCardState {
 
     LIVE(androidx.appcompat.R.attr.colorPrimary,
             com.google.android.material.R.attr.colorOnPrimary,
@@ -40,27 +40,27 @@ public enum TicketState {
             androidx.appcompat.R.attr.colorError);
 
     @AttrRes
-    private final int stubColorAttr;
+    private final int datePanelColorAttr;
     @AttrRes
-    private final int stubTextColorAttr;
+    private final int datePanelTextColorAttr;
     @AttrRes
     private final int statusColorAttr;
 
-    TicketState(@AttrRes int stubColorAttr, @AttrRes int stubTextColorAttr,
+    EventCardState(@AttrRes int datePanelColorAttr, @AttrRes int datePanelTextColorAttr,
             @AttrRes int statusColorAttr) {
-        this.stubColorAttr = stubColorAttr;
-        this.stubTextColorAttr = stubTextColorAttr;
+        this.datePanelColorAttr = datePanelColorAttr;
+        this.datePanelTextColorAttr = datePanelTextColorAttr;
         this.statusColorAttr = statusColorAttr;
     }
 
     @AttrRes
-    public int getStubColorAttr() {
-        return stubColorAttr;
+    public int getDatePanelColorAttr() {
+        return datePanelColorAttr;
     }
 
     @AttrRes
-    public int getStubTextColorAttr() {
-        return stubTextColorAttr;
+    public int getDatePanelTextColorAttr() {
+        return datePanelTextColorAttr;
     }
 
     /** Returns when the next events start, or null while one is happening or none is ahead. */
@@ -68,7 +68,7 @@ public enum TicketState {
     public static LocalDateTime nextStart(List<Event> events, LocalDateTime now) {
         LocalDateTime nextStart = null;
         for (Event event : events) {
-            TicketState state = at(event, now, null);
+            EventCardState state = at(event, now, null);
             if (state == LIVE) {
                 return null;
             } else if (state == UPCOMING
@@ -80,7 +80,7 @@ public enum TicketState {
     }
 
     /** Returns the state of an event at the given time, given when the next events start. */
-    public static TicketState at(Event event, LocalDateTime now,
+    public static EventCardState at(Event event, LocalDateTime now,
             @Nullable LocalDateTime nextStart) {
         if (event.getStatus() == EventStatus.CANCELLED) {
             return CANCELLED;
