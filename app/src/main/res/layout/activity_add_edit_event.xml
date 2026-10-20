@@ -6,15 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddEventActivity">
+    tools:context=".AddEditEventActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationContentDescription="@string/description_navigate_up"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/title_add_event" />
+        app:navigationIcon="?attr/homeAsUpIndicator" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
@@ -42,7 +41,7 @@
                     android:imeOptions="actionNext|flagNoExtractUi"
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences"
-                    android:maxLength="100" />
+                    android:maxLength="@integer/text_max_length" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- No error icon here, so the calendar button stays visible while an error shows. -->
@@ -57,7 +56,7 @@
                 app:endIconDrawable="@drawable/ic_event"
                 app:endIconMode="custom"
                 app:errorIconDrawable="@null"
-                app:helperText="@string/hint_date_format">
+                app:helperText="@string/helper_date_format">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/date_input"
@@ -70,7 +69,7 @@
                     android:maxLength="10" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- One time range; AddEventActivity fills the lists and restores the times. -->
+            <!-- One time range; AddEditEventActivity fills the lists and restores the times. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -129,7 +128,7 @@
                     android:imeOptions="actionNext|flagNoExtractUi"
                     android:importantForAutofill="no"
                     android:inputType="textCapWords"
-                    android:maxLength="100" />
+                    android:maxLength="@integer/text_max_length" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -147,10 +146,10 @@
                     android:imeOptions="actionDone|flagNoExtractUi"
                     android:importantForAutofill="no"
                     android:inputType="textCapWords"
-                    android:maxLength="100" />
+                    android:maxLength="@integer/text_max_length" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- AddEventActivity sets the items from EventType and restores the chosen type. -->
+            <!-- AddEditEventActivity fills it from EventType and restores the chosen type. -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/type_layout"
                 style="@style/Widget.EventTracker.DropdownField"
@@ -168,7 +167,7 @@
                     android:saveEnabled="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- AddEventActivity sets the items from EventStatus and starts at Upcoming. -->
+            <!-- AddEditEventActivity fills it from EventStatus and starts at Upcoming. -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/status_layout"
                 style="@style/Widget.EventTracker.DropdownField"

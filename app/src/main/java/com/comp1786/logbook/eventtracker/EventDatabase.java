@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Saves events in SQLite, as the module guide's database helper does.
+ * Saves events in SQLite, as the module brief's database helper does.
  */
 public class EventDatabase extends SQLiteOpenHelper {
 
@@ -66,7 +66,7 @@ public class EventDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
-            // Version 2 adds the status. Events saved before it count as upcoming.
+            // Version 2 adds the status, and events saved before it count as upcoming.
             db.execSQL("ALTER TABLE Event ADD COLUMN Status TEXT NOT NULL DEFAULT 'UPCOMING'");
         }
     }

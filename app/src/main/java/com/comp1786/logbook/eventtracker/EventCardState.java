@@ -1,10 +1,15 @@
 package com.comp1786.logbook.eventtracker;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Paint;
+import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.color.MaterialColors;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +20,7 @@ import java.util.List;
 /**
  * Where an event is in time, or that it was cancelled, with the colors and text that show it.
  */
-public enum TicketState {
+public enum EventCardState {
 
     LIVE(androidx.appcompat.R.attr.colorPrimary,
             com.google.android.material.R.attr.colorOnPrimary,
@@ -29,38 +34,33 @@ public enum TicketState {
     PAST(com.google.android.material.R.attr.colorSurfaceContainerHighest,
             com.google.android.material.R.attr.colorOnSurfaceVariant,
             com.google.android.material.R.attr.colorOnSurfaceVariant),
-    // The only status in color, as the one that does not follow from the time.
+    // The only status in red, as the one that does not follow from the time.
     CANCELLED(com.google.android.material.R.attr.colorSurfaceContainerHighest,
             com.google.android.material.R.attr.colorOnSurfaceVariant,
             androidx.appcompat.R.attr.colorError);
 
     @AttrRes
-    private final int stubColorAttr;
+    private final int datePanelColorAttr;
     @AttrRes
-    private final int stubTextColorAttr;
+    private final int datePanelTextColorAttr;
     @AttrRes
     private final int statusColorAttr;
 
-    TicketState(@AttrRes int stubColorAttr, @AttrRes int stubTextColorAttr,
+    EventCardState(@AttrRes int datePanelColorAttr, @AttrRes int datePanelTextColorAttr,
             @AttrRes int statusColorAttr) {
-        this.stubColorAttr = stubColorAttr;
-        this.stubTextColorAttr = stubTextColorAttr;
+        this.datePanelColorAttr = datePanelColorAttr;
+        this.datePanelTextColorAttr = datePanelTextColorAttr;
         this.statusColorAttr = statusColorAttr;
     }
 
     @AttrRes
-    public int getStubColorAttr() {
-        return stubColorAttr;
+    public int getDatePanelColorAttr() {
+        return datePanelColorAttr;
     }
 
     @AttrRes
-    public int getStubTextColorAttr() {
-        return stubTextColorAttr;
-    }
-
-    @AttrRes
-    public int getStatusColorAttr() {
-        return statusColorAttr;
+    public int getDatePanelTextColorAttr() {
+        return datePanelTextColorAttr;
     }
 
     /** Returns when the next events start, or null while one is happening or none is ahead. */
@@ -68,7 +68,7 @@ public enum TicketState {
     public static LocalDateTime nextStart(List<Event> events, LocalDateTime now) {
         LocalDateTime nextStart = null;
         for (Event event : events) {
-            TicketState state = at(event, now, null);
+            EventCardState state = at(event, now, null);
             if (state == LIVE) {
                 return null;
             } else if (state == UPCOMING
@@ -80,7 +80,7 @@ public enum TicketState {
     }
 
     /** Returns the state of an event at the given time, given when the next events start. */
-    public static TicketState at(Event event, LocalDateTime now,
+    public static EventCardState at(Event event, LocalDateTime now,
             @Nullable LocalDateTime nextStart) {
         if (event.getStatus() == EventStatus.CANCELLED) {
             return CANCELLED;
@@ -97,8 +97,36 @@ public enum TicketState {
         return ChronoUnit.DAYS.between(today, countdownDate(event));
     }
 
+    /** Shows the status phrase in its color, with a dot while the event is happening. */
+    public void showStatus(TextView statusView, Event event, long daysAway) {
+        statusView.setText(statusText(statusView.getContext(), event, daysAway));
+        statusView.setTextColor(MaterialColors.getColor(statusView, statusColorAttr));
+        statusView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                this == LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
+    }
+
+    /** Grays out a cancelled event and strikes through its name, or shows it as usual. */
+    public void showCancelled(TextView nameView, TextView typeLabel, EventType type,
+            TextView... timeViews) {
+        boolean cancelled = this == CANCELLED;
+        int textColor = MaterialColors.getColor(nameView, cancelled
+                ? com.google.android.material.R.attr.colorOnSurfaceVariant
+                : com.google.android.material.R.attr.colorOnSurface);
+        nameView.setTextColor(textColor);
+        for (TextView timeView : timeViews) {
+            timeView.setTextColor(textColor);
+        }
+        int flags = nameView.getPaintFlags();
+        nameView.setPaintFlags(cancelled
+                ? flags | Paint.STRIKE_THRU_TEXT_FLAG : flags & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        typeLabel.setBackgroundTintList(ColorStateList.valueOf(cancelled
+                ? MaterialColors.getColor(typeLabel,
+                        com.google.android.material.R.attr.colorSurfaceContainerHighest)
+                : typeLabel.getContext().getColor(type.getContainerColorRes())));
+    }
+
     /** Describes the status with when the event is, such as "Upcoming in 6 days". */
-    public String statusText(Context context, Event event, long daysAway) {
+    private String statusText(Context context, Event event, long daysAway) {
         if (this == LIVE) {
             return context.getString(R.string.status_live);
         } else if (this == CANCELLED) {

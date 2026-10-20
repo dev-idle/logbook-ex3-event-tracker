@@ -1,5 +1,7 @@
 package com.comp1786.logbook.eventtracker;
 
+import androidx.annotation.Nullable;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -8,7 +10,7 @@ import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 /**
- * Reads and writes event dates in the DD/MM/YYYY format used by the brief.
+ * Reads and writes event dates in the DD/MM/YYYY format of the module brief.
  */
 public final class EventDates {
 
@@ -20,24 +22,25 @@ public final class EventDates {
     private static final DateTimeFormatter INPUT = DateTimeFormatter.ofPattern("d/M/uuuu")
             .withResolverStyle(ResolverStyle.STRICT);
     private static final DateTimeFormatter OUTPUT = DateTimeFormatter.ofPattern("dd/MM/uuuu");
-    // Day and month names are in English to match the rest of the app.
+    // Day and month names are in English to match the app, with Sep rather than the UK Sept.
     private static final DateTimeFormatter SHORT_MONTH =
-            DateTimeFormatter.ofPattern("MMM", Locale.UK);
+            DateTimeFormatter.ofPattern("MMM", Locale.US);
     private static final DateTimeFormatter DAY_OF_MONTH =
-            DateTimeFormatter.ofPattern("d", Locale.UK);
+            DateTimeFormatter.ofPattern("d", Locale.US);
     private static final DateTimeFormatter SHORT_DAY_OF_WEEK =
-            DateTimeFormatter.ofPattern("EEE", Locale.UK);
-    private static final DateTimeFormatter MEDIUM =
-            DateTimeFormatter.ofPattern("EEE d MMM uuuu", Locale.UK);
+            DateTimeFormatter.ofPattern("EEE", Locale.US);
+    private static final DateTimeFormatter DAY_OF_WEEK =
+            DateTimeFormatter.ofPattern("EEEE", Locale.US);
     private static final DateTimeFormatter LONG =
-            DateTimeFormatter.ofPattern("EEEE d MMMM uuuu", Locale.UK);
+            DateTimeFormatter.ofPattern("EEEE d MMMM uuuu", Locale.US);
     private static final DateTimeFormatter MONTH =
-            DateTimeFormatter.ofPattern("MMMM uuuu", Locale.UK);
+            DateTimeFormatter.ofPattern("MMMM uuuu", Locale.US);
 
     private EventDates() {
     }
 
     /** Returns the date for text such as "5/3/2026", or null if it is not a real date. */
+    @Nullable
     public static LocalDate parse(String text) {
         try {
             return LocalDate.parse(text, INPUT);
@@ -66,9 +69,9 @@ public final class EventDates {
         return date.format(SHORT_DAY_OF_WEEK);
     }
 
-    /** Formats a date with a short day and month, such as "Thu 5 Nov 2026". */
-    public static String formatMedium(LocalDate date) {
-        return date.format(MEDIUM);
+    /** Formats the day of the week in full, such as "Saturday". */
+    public static String formatDayOfWeek(LocalDate date) {
+        return date.format(DAY_OF_WEEK);
     }
 
     /** Formats a date in full, such as "Saturday 24 October 2026". */

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Material 3 color scheme generated from seed #2E6FD8, a Luminous Blue tone -->
+    <!-- Material 3 color scheme generated from seed #2E6FD8 -->
     <color name="md_theme_light_primary">#455E91</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#D8E2FF</color>
@@ -71,9 +71,9 @@
     <color name="md_theme_dark_surfaceContainerHigh">#282A2F</color>
     <color name="md_theme_dark_surfaceContainerHighest">#33353A</color>
 
-    <!-- Tickets on a slightly darker list, so their notches show -->
+    <!-- Cards on a slightly darker list, so their notches show -->
     <color name="list_background">@color/md_theme_light_surfaceContainer</color>
-    <color name="ticket_body">@color/md_theme_light_surfaceContainerLowest</color>
+    <color name="card_body">@color/md_theme_light_surfaceContainerLowest</color>
 
     <!-- Event type labels, 7:1 or more against the label text -->
     <color name="type_conference_container">#DEECFF</color>

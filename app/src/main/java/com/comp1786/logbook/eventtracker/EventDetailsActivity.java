@@ -1,8 +1,6 @@
 package com.comp1786.logbook.eventtracker;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 /**
  * Shows one saved event in full, with a menu to edit or delete it.
@@ -47,10 +46,13 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView typeLabel;
     private TextView statusText;
     private View timeBlock;
+    private TextView dayText;
+    private TextView dayOfWeekText;
+    private TextView monthText;
     private TextView startTimeText;
-    private TextView startDateText;
     private TextView lengthText;
     private TextView endTimeText;
+    private TextView nextDayText;
     private TextView endDateText;
     private TextView locationText;
     private TextView organizerText;
@@ -151,18 +153,21 @@ public class EventDetailsActivity extends AppCompatActivity {
         typeLabel = findViewById(R.id.type_label);
         statusText = findViewById(R.id.event_status);
         timeBlock = findViewById(R.id.time_block);
+        dayText = findViewById(R.id.event_day);
+        dayOfWeekText = findViewById(R.id.event_day_of_week);
+        monthText = findViewById(R.id.event_month);
         startTimeText = findViewById(R.id.start_time);
-        startDateText = findViewById(R.id.start_date);
         lengthText = findViewById(R.id.event_length);
         endTimeText = findViewById(R.id.end_time);
+        nextDayText = findViewById(R.id.next_day);
         endDateText = findViewById(R.id.end_date);
         locationText = findViewById(R.id.event_location);
         organizerText = findViewById(R.id.event_organizer);
     }
 
     private void openEditEvent() {
-        editEventLauncher.launch(new Intent(EventDetailsActivity.this, AddEventActivity.class)
-                .putExtra(AddEventActivity.EXTRA_EVENT, event));
+        editEventLauncher.launch(new Intent(EventDetailsActivity.this, AddEditEventActivity.class)
+                .putExtra(AddEditEventActivity.EXTRA_EVENT, event));
     }
 
     /** Asks before deleting the event, which then returns RESULT_DELETED. */
@@ -182,9 +187,9 @@ public class EventDetailsActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Shows the saved event as its ticket would, with the same status text and colors. */
+    /** Shows the saved event as its card would, with the same status text and colors. */
     private void showEvent() {
-        // The same steps and time as the list, so the status matches the ticket.
+        // The same steps and time as the list, so the status matches the card.
         LocalDateTime now = LocalDateTime.now();
         database.completeEndedEvents(now);
         event = database.getEvent(eventId);
@@ -192,57 +197,42 @@ public class EventDetailsActivity extends AppCompatActivity {
             finish();
             return;
         }
-        TicketState state =
-                TicketState.at(event, now, TicketState.nextStart(database.getAllEvents(), now));
+        EventCardState state = EventCardState.at(
+                event, now, EventCardState.nextStart(database.getAllEvents(), now));
         EventType type = event.getType();
         nameText.setText(event.getName());
         typeLabel.setText(type.getLabelRes());
-        statusText.setText(state.statusText(this, event, state.daysAway(event, now.toLocalDate())));
-        statusText.setTextColor(MaterialColors.getColor(statusText, state.getStatusColorAttr()));
-        statusText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                state == TicketState.LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
-        showTimes();
+        state.showStatus(statusText, event, state.daysAway(event, now.toLocalDate()));
+        showTimes(state);
         locationText.setText(event.getLocation());
         organizerText.setText(event.getOrganizer());
-        showCancelled(type, state == TicketState.CANCELLED);
+        state.showCancelled(nameText, typeLabel, type, startTimeText, endTimeText);
     }
 
-    /** Shows when the event starts and ends, with the end date in color if it is the next day. */
-    private void showTimes() {
+    /** Shows the date and a timeline from start to end, with the end date if it is the next day. */
+    private void showTimes(EventCardState state) {
         LocalDate startDate = event.getDate();
         LocalDate endDate = event.getEnd().toLocalDate();
         String start = EventTimes.format(event.getStartTime());
         String end = EventTimes.format(event.getEndTime());
         String length = EventTimes.formatLength(
                 getResources(), event.getStartTime(), event.getEndTime());
+        dayText.setText(EventDates.formatDayOfMonth(startDate));
+        boolean over = state == EventCardState.PAST || state == EventCardState.CANCELLED;
+        // Blue like a colored date panel, or gray like a past or cancelled one.
+        dayText.setTextColor(MaterialColors.getColor(dayText, over
+                ? com.google.android.material.R.attr.colorOnSurfaceVariant
+                : androidx.appcompat.R.attr.colorPrimary));
+        dayOfWeekText.setText(EventDates.formatDayOfWeek(startDate));
+        monthText.setText(EventDates.formatMonth(YearMonth.from(startDate)));
         startTimeText.setText(start);
-        startDateText.setText(EventDates.formatMedium(startDate));
         lengthText.setText(length);
         endTimeText.setText(end);
-        endDateText.setText(EventDates.formatMedium(endDate));
-        // The same color as the +1 on the ticket.
-        endDateText.setTextColor(MaterialColors.getColor(endDateText, event.endsNextDay()
-                ? androidx.appcompat.R.attr.colorPrimary
-                : com.google.android.material.R.attr.colorOnSurfaceVariant));
+        nextDayText.setVisibility(event.endsNextDay() ? View.VISIBLE : View.GONE);
+        endDateText.setVisibility(event.endsNextDay() ? View.VISIBLE : View.GONE);
+        endDateText.setText(EventDates.formatLong(endDate));
         timeBlock.setContentDescription(getString(R.string.description_starts_ends,
                 start, EventDates.formatLong(startDate), end, EventDates.formatLong(endDate),
                 length));
-    }
-
-    /** Grays out a cancelled event and strikes through its name, as its ticket does. */
-    private void showCancelled(EventType type, boolean cancelled) {
-        int textColor = MaterialColors.getColor(nameText, cancelled
-                ? com.google.android.material.R.attr.colorOnSurfaceVariant
-                : com.google.android.material.R.attr.colorOnSurface);
-        nameText.setTextColor(textColor);
-        startTimeText.setTextColor(textColor);
-        endTimeText.setTextColor(textColor);
-        int flags = nameText.getPaintFlags();
-        nameText.setPaintFlags(cancelled
-                ? flags | Paint.STRIKE_THRU_TEXT_FLAG : flags & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        typeLabel.setBackgroundTintList(ColorStateList.valueOf(cancelled
-                ? MaterialColors.getColor(typeLabel,
-                        com.google.android.material.R.attr.colorSurfaceContainerHighest)
-                : getColor(type.getContainerColorRes())));
     }
 }

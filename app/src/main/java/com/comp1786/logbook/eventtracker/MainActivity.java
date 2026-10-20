@@ -35,6 +35,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Lists the saved events as cards, with a status filter and a way to delete several at once.
+ */
 public class MainActivity extends AppCompatActivity implements EventAdapter.OnEventClickListener {
 
     private static final String STATE_FILTER = "filter";
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     private EventStatus filter;
     private AlertDialog deleteDialog;
     private ListPopupWindow moreMenu;
+    // Set while another screen opens, so a quick second tap does not open it twice.
+    private boolean opening;
 
     private final ActivityResultLauncher<Intent> addEventLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         });
         eventList.setLayoutManager(layoutManager);
         eventList.setAdapter(adapter);
-        // Kept only across rotation, so the app always opens on every saved event.
+        // Kept across rotation but not saved, so a new launch shows every saved event.
         String savedFilter = savedInstanceState == null
                 ? null : savedInstanceState.getString(STATE_FILTER);
         filter = savedFilter == null ? null : EventStatus.valueOf(savedFilter);
@@ -132,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     @Override
     protected void onStart() {
         super.onStart();
+        opening = false;
         // Reloads the saved events, whose states and countdowns change as time passes.
         showEvents();
     }
@@ -157,7 +163,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             adapter.select(selectedIds);
             startSelection();
         }
-        if (savedInstanceState.getBoolean(STATE_DELETE_SHOWN)) {
+        // The filter may hide the selected events by now, such as once they have ended.
+        if (savedInstanceState.getBoolean(STATE_DELETE_SHOWN) && adapter.getSelectedCount() > 0) {
             showDeleteDialog();
         }
     }
@@ -241,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         }
     }
 
-    /** Starts selecting with this ticket, or selects it like a tap while already selecting. */
+    /** Starts selecting with this card, or selects it like a tap while already selecting. */
     @Override
     public void onEventLongClick(Event event) {
         startSelection();
@@ -276,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         addButton = findViewById(R.id.add_button);
     }
 
-    /** Adds a chip for each status, with the current filter chosen. No chosen chip shows all. */
+    /** Adds a chip per status with the current filter chosen; none chosen shows every event. */
     private void buildFilterChips() {
         for (EventStatus status : EventStatus.values()) {
             addFilterChip(status);
@@ -299,10 +306,18 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     }
 
     private void openAddEvent() {
-        addEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class));
+        if (opening) {
+            return;
+        }
+        opening = true;
+        addEventLauncher.launch(new Intent(MainActivity.this, AddEditEventActivity.class));
     }
 
     private void openEventDetails(Event event) {
+        if (opening) {
+            return;
+        }
+        opening = true;
         detailsLauncher.launch(new Intent(MainActivity.this, EventDetailsActivity.class)
                 .putExtra(EventDetailsActivity.EXTRA_EVENT_ID, event.getId()));
     }
@@ -313,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         if (result.getResultCode() != RESULT_OK || data == null) {
             return;
         }
-        scrollToEvent(data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
+        scrollToEvent(data.getLongExtra(AddEditEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
         IconSnackbar.make(eventList, getString(R.string.message_event_added),
                 R.drawable.ic_check_circle, Snackbar.LENGTH_SHORT).show();
     }
@@ -343,6 +358,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
                 getResources().getQuantityString(R.plurals.message_events_deleted, count, count),
                 R.drawable.ic_delete, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.button_undo, v -> {
+            // A second tap before the bar closes would insert the same IDs again and crash.
+            v.setEnabled(false);
             database.restoreEvents(events);
             showEvents();
             scrollToEvent(events.get(0).getId());
@@ -350,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         snackbar.show();
     }
 
-    /** Turns the app bar into a selection bar, where tapping a ticket selects it. */
+    /** Turns the app bar into a selection bar, where tapping a card selects it. */
     private void startSelection() {
         if (adapter.isSelecting()) {
             return;
@@ -364,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         showSelection();
     }
 
-    /** Shows how many tickets are selected, with the matching Select all and delete buttons. */
+    /** Shows how many cards are selected, with the matching Select all and delete buttons. */
     private void showSelection() {
         int count = adapter.getSelectedCount();
         toolbar.setTitle(count == 0 ? getString(R.string.title_select_events)
@@ -372,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         invalidateOptionsMenu();
     }
 
-    /** Turns the selection bar back into the app bar and deselects every ticket. */
+    /** Turns the selection bar back into the app bar and deselects every card. */
     private void stopSelection() {
         adapter.setSelecting(false);
         selectionCallback.setEnabled(false);
@@ -412,7 +429,6 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
 
     /** Shows the events the filter keeps and their number, or the empty state if there are none. */
     private void showEvents() {
-        // Upcoming events that have ended become completed before they are shown.
         LocalDateTime now = LocalDateTime.now();
         database.completeEndedEvents(now);
         boolean nothingSaved = database.countEvents() == 0;
@@ -422,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             return;
         }
         List<Event> events = database.getEvents(filter);
-        // The same time, so every ticket shown as ended is also completed.
+        // The same time, so every card shown as ended is also completed.
         adapter.setEvents(events, now);
         filterBar.setVisibility(nothingSaved ? View.GONE : View.VISIBLE);
         boolean empty = events.isEmpty();
@@ -442,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             // Events no longer shown were deselected, so the number selected may have changed.
             showSelection();
         } else {
-            // The More options button shows only while there are tickets to select.
+            // The More options button shows only while there are cards to select.
             invalidateOptionsMenu();
         }
     }

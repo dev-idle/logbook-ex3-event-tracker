@@ -9,7 +9,7 @@
 
     <dimen name="card_padding">16dp</dimen>
     <dimen name="card_margin">4dp</dimen>
-    <!-- Keeps the last ticket clear of the Add event button: 56dp button plus two 16dp gaps. -->
+    <!-- Keeps the last card clear of the Add event button: 56dp button plus two 16dp gaps. -->
     <dimen name="list_padding_bottom">88dp</dimen>
     <dimen name="corner_extra_small">4dp</dimen>
     <dimen name="corner_small">8dp</dimen>
@@ -18,17 +18,19 @@
     <!-- Moves the More options button toward the edge, so its dots end on the 16dp keyline -->
     <dimen name="more_button_shift">6dp</dimen>
 
-    <dimen name="ticket_stub_width">64dp</dimen>
-    <dimen name="ticket_corner_radius">16dp</dimen>
-    <dimen name="ticket_notch_radius">8dp</dimen>
-    <dimen name="ticket_perforation_width">1dp</dimen>
-    <dimen name="ticket_perforation_dash">4dp</dimen>
-    <dimen name="ticket_selection_width">2dp</dimen>
+    <dimen name="card_date_panel_width">64dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_notch_radius">8dp</dimen>
+    <dimen name="card_divider_width">1dp</dimen>
+    <dimen name="card_divider_dash">4dp</dimen>
+    <dimen name="card_selection_width">2dp</dimen>
     <dimen name="live_dot_padding">6dp</dimen>
-    <dimen name="ticket_time_line_height">1dp</dimen>
+    <dimen name="card_time_line_height">1dp</dimen>
 
     <!-- Material 3 list item leading icon -->
     <dimen name="detail_icon_size">24dp</dimen>
+    <dimen name="detail_icon_margin">16dp</dimen>
+    <dimen name="timeline_width">2dp</dimen>
 
     <dimen name="type_label_padding_horizontal">8dp</dimen>
     <dimen name="type_label_padding_vertical">2dp</dimen>

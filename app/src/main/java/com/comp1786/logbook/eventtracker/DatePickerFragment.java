@@ -11,12 +11,14 @@ import androidx.fragment.app.DialogFragment;
 import java.time.LocalDate;
 
 /**
- * Hosts the module guide's DatePickerDialog and returns the chosen date as a fragment result.
+ * The module brief's DatePickerFragment, adapted to return the date as a fragment result.
  */
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
 
+    /** Fragment result key for the chosen date. */
     public static final String REQUEST_KEY = "date_picker";
+    /** Result extra holding the chosen LocalDate. */
     public static final String RESULT_DATE = "date";
 
     private static final String ARG_DATE = "date";

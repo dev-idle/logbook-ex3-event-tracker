@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Background: TicketDrawable. Less top padding offsets the font's space above the name. -->
+<!-- Drawn by EventCardDrawable, with less top padding for the font's space above the name. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,8 +12,8 @@
 
     <!-- Screen readers hear the full date, such as "Saturday 24 October 2026". -->
     <LinearLayout
-        android:id="@+id/date_stub"
-        android:layout_width="@dimen/ticket_stub_width"
+        android:id="@+id/date_panel"
+        android:layout_width="@dimen/card_date_panel_width"
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/event_month"
-            style="@style/Widget.EventTracker.TicketStub.Month"
+            style="@style/Widget.EventTracker.DatePanel.Month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/event_day"
-            style="@style/Widget.EventTracker.TicketStub.Day"
+            style="@style/Widget.EventTracker.DatePanel.Day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/event_day_of_week"
-            style="@style/Widget.EventTracker.TicketStub.DayOfWeek"
+            style="@style/Widget.EventTracker.DatePanel.DayOfWeek"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
@@ -58,23 +58,23 @@
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toStartOf="@id/selection_check"
-        app:layout_constraintStart_toEndOf="@id/date_stub"
+        app:layout_constraintStart_toEndOf="@id/date_panel"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginEnd="@dimen/card_padding"
         tools:text="Android Dev Summit" />
 
-    <!-- Shown while selecting. Screen readers hear "Selected" from the ticket itself. -->
+    <!-- Shown while selecting, and silent, as screen readers hear "Selected" from the card. -->
     <ImageView
         android:id="@+id/selection_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/space_medium"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_ticket_check"
+        android:src="@drawable/ic_card_check"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/ticket_check" />
+        app:tint="@color/card_check" />
 
     <TextView
         android:id="@+id/type_label"
@@ -122,7 +122,7 @@
 
         <TextView
             android:id="@+id/start_time"
-            style="@style/Widget.EventTracker.TicketTime"
+            style="@style/Widget.EventTracker.CardTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:importantForAccessibility="no"
@@ -133,9 +133,9 @@
 
         <View
             android:id="@+id/start_line"
-            style="@style/Widget.EventTracker.TicketTimeLine"
+            style="@style/Widget.EventTracker.CardTimeLine"
             android:layout_width="0dp"
-            android:layout_height="@dimen/ticket_time_line_height"
+            android:layout_height="@dimen/card_time_line_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/event_length"
             app:layout_constraintStart_toEndOf="@id/start_time"
@@ -161,9 +161,9 @@
 
         <View
             android:id="@+id/end_line"
-            style="@style/Widget.EventTracker.TicketTimeLine"
+            style="@style/Widget.EventTracker.CardTimeLine"
             android:layout_width="0dp"
-            android:layout_height="@dimen/ticket_time_line_height"
+            android:layout_height="@dimen/card_time_line_height"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/end_time"
             app:layout_constraintStart_toEndOf="@id/event_length"
@@ -171,7 +171,7 @@
 
         <TextView
             android:id="@+id/end_time"
-            style="@style/Widget.EventTracker.TicketTime"
+            style="@style/Widget.EventTracker.CardTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_tiny"
@@ -182,7 +182,7 @@
             app:layout_goneMarginEnd="0dp"
             tools:text="23:00" />
 
-        <!-- Raised beside the end time, like the +1 on a flight that lands the next day. -->
+        <!-- Raised beside the end time when it falls on the next day. -->
         <TextView
             android:id="@+id/next_day"
             android:layout_width="wrap_content"
@@ -200,7 +200,7 @@
     <!-- Two lines fit a full address. -->
     <TextView
         android:id="@+id/event_location"
-        style="@style/Widget.EventTracker.EventDetail"
+        style="@style/Widget.EventTracker.CardDetail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_small"
@@ -214,7 +214,7 @@
 
     <TextView
         android:id="@+id/event_organizer"
-        style="@style/Widget.EventTracker.EventDetail"
+        style="@style/Widget.EventTracker.CardDetail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_extra_small"

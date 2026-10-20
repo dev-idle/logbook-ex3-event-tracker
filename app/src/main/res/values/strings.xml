@@ -24,7 +24,7 @@
     <string name="empty_completed">No completed events</string>
     <string name="empty_cancelled">No cancelled events</string>
     <string name="empty_filtered_message">Tap the filter again to see every event.</string>
-    <!-- A ticket's status with when the event is, such as "Upcoming in 4 days" -->
+    <!-- A card's status with when the event is, such as "Upcoming in 4 days" -->
     <string name="status_live">Happening now</string>
     <string name="status_upcoming_today">Upcoming today</string>
     <string name="status_upcoming_tomorrow">Upcoming tomorrow</string>
@@ -48,10 +48,12 @@
     <string name="event_length_hours">%1$d hr</string>
     <string name="event_length_minutes">%1$d min</string>
     <string name="event_length_hours_minutes">%1$d hr %2$d min</string>
-    <!-- Marks an end time on the next day, as flight tickets do -->
+    <!-- Marks an end time on the next day -->
     <string name="next_day_marker" translatable="false">+1</string>
     <string name="description_time_range">From %1$s to %2$s, %3$s</string>
     <string name="description_time_range_next_day">From %1$s to %2$s the next day, %3$s</string>
+    <string name="description_location">Location: %1$s</string>
+    <string name="description_organizer">Organizer: %1$s</string>
     <string name="button_add_event">Add event</string>
     <string name="message_event_added">Event added</string>
     <string name="message_event_updated">Event updated</string>
@@ -62,7 +64,7 @@
     <string name="button_undo">Undo</string>
     <string name="description_view_details">View details</string>
 
-    <!-- Selecting tickets to delete several events at once -->
+    <!-- Selecting cards to delete several events at once -->
     <string name="menu_select_events">Select events</string>
     <string name="title_select_events">Select events</string>
     <plurals name="selected_count">
@@ -86,8 +88,6 @@
     <string name="title_add_event">Add event</string>
     <string name="title_edit_event">Edit event</string>
     <string name="title_event_details">Event details</string>
-    <string name="label_starts">Starts</string>
-    <string name="label_ends">Ends</string>
     <string name="description_starts_ends">Starts at %1$s on %2$s, ends at %3$s on %4$s, %5$s</string>
     <string name="menu_more">More options</string>
     <string name="menu_edit">Edit event</string>
@@ -101,7 +101,7 @@
     <string name="label_organizer">Event organizer</string>
     <string name="label_type">Event type</string>
     <string name="label_status">Event status</string>
-    <string name="hint_date_format" translatable="false">DD/MM/YYYY</string>
+    <string name="helper_date_format" translatable="false">DD/MM/YYYY</string>
     <string name="description_choose_date">Choose a date</string>
     <string name="description_navigate_up">Navigate up</string>
     <string name="button_save_event">Save event</string>
@@ -126,8 +126,8 @@
     <string name="error_date_format">Event date must be in the format DD/MM/YYYY</string>
     <string name="error_date_not_real">Event date must be a real date</string>
     <string name="error_date_out_of_range">Event date must be between %1$s and %2$s</string>
-    <string name="error_start_time_required">Enter the start time</string>
-    <string name="error_end_time_required">Enter the end time</string>
+    <string name="error_start_time_required">Select the start time</string>
+    <string name="error_end_time_required">Select the end time</string>
     <string name="error_end_time_same">End time must be different from the start time</string>
     <string name="error_location_required">Enter the event location</string>
     <string name="error_organizer_required">Enter the event organizer</string>

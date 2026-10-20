@@ -26,7 +26,7 @@
             app:maxButtonHeight="?attr/minTouchTargetSize"
             app:title="@string/app_name" />
 
-        <!-- On the screen keyline with the chips and tickets, also while selecting. -->
+        <!-- On the screen keyline with the chips and cards, also while selecting. -->
         <TextView
             android:id="@+id/event_count"
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             tools:text="6 events" />
 
-        <!-- Stays under the title as the list scrolls. MainActivity adds one chip per status. -->
+        <!-- Holds a chip per status, added in MainActivity, and stays put as the list scrolls. -->
         <HorizontalScrollView
             android:id="@+id/filter_bar"
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Ticket margins and list padding give 8dp between tickets and 16dp at the sides. -->
+        <!-- Card margins and list padding give 8dp between cards and 16dp at the sides. -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/event_list"
             android:layout_width="match_parent"
