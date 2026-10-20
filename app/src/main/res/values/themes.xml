@@ -38,6 +38,10 @@
 
     <style name="Theme.EventTracker" parent="Base.Theme.EventTracker">
         <item name="android:datePickerDialogTheme">@style/ThemeOverlay.EventTracker.Picker</item>
+        <item name="actionOverflowMenuStyle">@style/Widget.EventTracker.OverflowMenu</item>
+        <item name="snackbarStyle">@style/Widget.EventTracker.Snackbar</item>
+        <item name="snackbarTextViewStyle">@style/Widget.EventTracker.Snackbar.TextView</item>
+        <item name="snackbarButtonStyle">@style/Widget.EventTracker.Snackbar.Button</item>
     </style>
 
     <!-- The list screen draws its background once, through the window. -->

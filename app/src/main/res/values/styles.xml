@@ -40,10 +40,53 @@
         <item name="colorOnContainer">?attr/colorOnPrimary</item>
     </style>
 
+    <!-- Confirming buttons that lose data, such as Delete and Discard, are red. -->
+    <style name="ThemeOverlay.EventTracker.DestructiveDialog"
+        parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.EventTracker.DestructiveButton</item>
+    </style>
+
+    <style name="Widget.EventTracker.DestructiveButton"
+        parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.DestructiveButton</item>
+    </style>
+
+    <style name="ThemeOverlay.EventTracker.DestructiveButton"
+        parent="ThemeOverlay.Material3.Button.TextButton">
+        <item name="colorOnContainer">?attr/colorError</item>
+    </style>
+
+    <!-- Messages line up with the tickets and share their corners and container blue. -->
+    <style name="Widget.EventTracker.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="android:layout_margin">@dimen/screen_padding</item>
+        <item name="backgroundTint">?attr/colorPrimaryContainer</item>
+        <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+    </style>
+
+    <style name="Widget.EventTracker.Snackbar.TextView" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <style name="Widget.EventTracker.Snackbar.Button"
+        parent="Widget.Material3.Button.TextButton.Snackbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.SnackbarButton</item>
+    </style>
+
+    <style name="ThemeOverlay.EventTracker.SnackbarButton"
+        parent="ThemeOverlay.Material3.Button.TextButton.Snackbar">
+        <item name="colorOnContainer">?attr/colorPrimary</item>
+    </style>
+
     <!-- The platform date picker takes its accents from attributes Material sets to secondary. -->
     <style name="ThemeOverlay.EventTracker.Picker" parent="ThemeOverlay.Material3.Dialog">
         <item name="android:colorAccent">?attr/colorPrimary</item>
         <item name="android:colorControlActivated">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Opens below its button and ends under its dots, which sit 24dp from the screen edge. -->
+    <style name="Widget.EventTracker.OverflowMenu" parent="Widget.Material3.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:popupBackground">@drawable/bg_overflow_menu</item>
     </style>
 
     <!-- Each field keeps a line for its message, so an error does not move the form. -->

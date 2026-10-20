@@ -11,6 +11,7 @@
     <dimen name="card_margin">4dp</dimen>
     <!-- Keeps the last ticket clear of the Add event button: 56dp button plus two 16dp gaps. -->
     <dimen name="list_padding_bottom">88dp</dimen>
+    <dimen name="corner_extra_small">4dp</dimen>
     <dimen name="corner_small">8dp</dimen>
     <dimen name="button_height">56dp</dimen>
 

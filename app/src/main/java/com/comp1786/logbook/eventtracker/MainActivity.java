@@ -3,18 +3,22 @@ package com.comp1786.logbook.eventtracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +26,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,8 +46,13 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> showSavedEvent(result, R.string.message_event_added));
     private final ActivityResultLauncher<Intent> editEventLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> showSavedEvent(result, R.string.message_event_updated));
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == AddEventActivity.RESULT_DELETED) {
+                    showDeletedEvent(result);
+                } else {
+                    showSavedEvent(result, R.string.message_event_updated);
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
                     | WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.ime());
             // The app bar adds the status bar height itself, so its color fills that area.
-            v.setPadding(bars.left, 0, bars.right, bars.bottom);
+            v.setPadding(bars.left, 0, bars.right, 0);
+            // Padding the screen itself would throw off where CoordinatorLayout moves the button.
+            showAboveNavigationBar(bars.bottom);
             return insets;
         });
 
@@ -100,6 +112,22 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /** Ends the list above the navigation bar and lifts the button and empty state over it. */
+    private void showAboveNavigationBar(int barHeight) {
+        eventList.setPadding(eventList.getPaddingLeft(), eventList.getPaddingTop(),
+                eventList.getPaddingRight(),
+                getResources().getDimensionPixelSize(R.dimen.list_padding_bottom) + barHeight);
+        ViewGroup.MarginLayoutParams button =
+                (ViewGroup.MarginLayoutParams) addButton.getLayoutParams();
+        button.bottomMargin =
+                getResources().getDimensionPixelSize(R.dimen.screen_padding) + barHeight;
+        addButton.setLayoutParams(button);
+        ViewGroup.MarginLayoutParams empty =
+                (ViewGroup.MarginLayoutParams) emptyView.getLayoutParams();
+        empty.bottomMargin = barHeight;
+        emptyView.setLayoutParams(empty);
+    }
+
     private void bindViews() {
         toolbar = findViewById(R.id.toolbar);
         collapsingToolbar = findViewById(R.id.collapsing_toolbar);
@@ -128,6 +156,37 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show();
     }
 
+    /** Confirms that an event was deleted, with an action that saves it again. */
+    private void showDeletedEvent(ActivityResult result) {
+        Intent data = result.getData();
+        Event event = data == null
+                ? null : data.getSerializableExtra(AddEventActivity.EXTRA_EVENT, Event.class);
+        if (event == null) {
+            return;
+        }
+        Snackbar snackbar = makeSnackbar(
+                R.string.message_event_deleted, R.drawable.ic_delete, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.button_undo, v -> {
+            database.restoreEvent(event);
+            showEvents();
+            eventList.scrollToPosition(adapter.positionOf(event.getId()));
+        });
+        snackbar.show();
+    }
+
+    /** Returns a message at the bottom of the screen, with an icon before its text. */
+    private Snackbar makeSnackbar(@StringRes int messageRes, @DrawableRes int iconRes,
+            int duration) {
+        // Without an anchor, the Add event button moves up while the message shows.
+        Snackbar snackbar = Snackbar.make(eventList, messageRes, duration);
+        TextView text =
+                snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+        text.setCompoundDrawablesRelativeWithIntrinsicBounds(iconRes, 0, 0, 0);
+        text.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.space_medium));
+        TextViewCompat.setCompoundDrawableTintList(text, text.getTextColors());
+        return snackbar;
+    }
+
     /** Shows the events and their number, or the empty state when there are none. */
     private void showEvents() {
         // Upcoming events that have ended become completed before they are shown.
@@ -138,6 +197,10 @@ public class MainActivity extends AppCompatActivity {
         adapter.setEvents(events, now);
         boolean empty = events.isEmpty();
         emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
+        if (empty) {
+            // The button may still be shrunk from scrolling, and the empty state needs its label.
+            addButton.extend();
+        }
         collapsingToolbar.setSubtitle(empty ? null : getResources().getQuantityString(
                 R.plurals.event_count, events.size(), events.size()));
         // With no events there is nothing to scroll, so the app bar stays expanded.

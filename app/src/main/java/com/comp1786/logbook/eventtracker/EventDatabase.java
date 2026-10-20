@@ -35,6 +35,11 @@ public class EventDatabase extends SQLiteOpenHelper {
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE Event SET Name = ?, Date = ?, StartTime = ?, "
             + "EndTime = ?, Location = ?, Organizer = ?, Type = ?, Status = ? WHERE ID = ?";
+    // The ID comes last, as in UPDATE, so the details bind the same way.
+    private static final String RESTORE = "INSERT INTO Event "
+            + "(Name, Date, StartTime, EndTime, Location, Organizer, Type, Status, ID) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE = "DELETE FROM Event WHERE ID = ?";
     private static final String SELECT_ALL = "SELECT ID, Name, Date, StartTime, EndTime, "
             + "Location, Organizer, Type, Status FROM Event ORDER BY Date, StartTime, ID";
     // An event ends on the next day when its end time is not after its start time.
@@ -73,6 +78,23 @@ public class EventDatabase extends SQLiteOpenHelper {
             bindDetails(statement, event);
             statement.bindLong(9, event.getId());
             statement.executeUpdateDelete();
+        }
+    }
+
+    /** Deletes the event with this ID. */
+    public void deleteEvent(long id) {
+        try (SQLiteStatement statement = getWritableDatabase().compileStatement(DELETE)) {
+            statement.bindLong(1, id);
+            statement.executeUpdateDelete();
+        }
+    }
+
+    /** Saves a deleted event again under its ID, to undo the delete. */
+    public void restoreEvent(Event event) {
+        try (SQLiteStatement statement = getWritableDatabase().compileStatement(RESTORE)) {
+            bindDetails(statement, event);
+            statement.bindLong(9, event.getId());
+            statement.executeInsert();
         }
     }
 

@@ -38,10 +38,14 @@
     <string name="button_add_event">Add event</string>
     <string name="message_event_added">Event added</string>
     <string name="message_event_updated">Event updated</string>
+    <string name="message_event_deleted">Event deleted</string>
+    <string name="button_undo">Undo</string>
     <string name="description_edit_event">Edit event</string>
 
     <string name="title_add_event">Add event</string>
     <string name="title_edit_event">Edit event</string>
+    <string name="menu_more">More options</string>
+    <string name="menu_delete">Delete event</string>
     <string name="label_name">Event name</string>
     <string name="label_date">Event date</string>
     <string name="label_start_time">Start time</string>
@@ -63,6 +67,11 @@
     <string name="discard_changes_message">The changes you made will be lost.</string>
     <string name="button_discard">Discard</string>
     <string name="button_keep_editing">Keep editing</string>
+
+    <string name="delete_title">Delete this event?</string>
+    <string name="delete_message">“%1$s” on %2$s will be deleted.</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_cancel">Cancel</string>
 
     <!-- Wording follows the GOV.UK Design System error message guidance -->
     <string name="error_name_required">Enter the event name</string>
