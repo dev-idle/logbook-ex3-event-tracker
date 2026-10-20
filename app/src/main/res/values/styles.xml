@@ -175,4 +175,25 @@
         <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
+
+    <!-- Event details screen -->
+    <style name="Widget.EventTracker.DetailLabel" parent="">
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.EventTracker.DetailTime" parent="">
+        <item name="android:textAppearance">?attr/textAppearanceHeadlineSmall</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.EventTracker.DetailDate" parent="">
+        <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.EventTracker.DetailValue" parent="">
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
 </resources>

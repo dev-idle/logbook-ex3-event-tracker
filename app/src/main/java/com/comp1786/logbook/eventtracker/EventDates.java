@@ -27,6 +27,8 @@ public final class EventDates {
             DateTimeFormatter.ofPattern("d", Locale.UK);
     private static final DateTimeFormatter SHORT_DAY_OF_WEEK =
             DateTimeFormatter.ofPattern("EEE", Locale.UK);
+    private static final DateTimeFormatter MEDIUM =
+            DateTimeFormatter.ofPattern("EEE d MMM uuuu", Locale.UK);
     private static final DateTimeFormatter LONG =
             DateTimeFormatter.ofPattern("EEEE d MMMM uuuu", Locale.UK);
     private static final DateTimeFormatter MONTH =
@@ -62,6 +64,11 @@ public final class EventDates {
     /** Formats the day of the week, such as "Sat". */
     public static String formatShortDayOfWeek(LocalDate date) {
         return date.format(SHORT_DAY_OF_WEEK);
+    }
+
+    /** Formats a date with a short day and month, such as "Thu 5 Nov 2026". */
+    public static String formatMedium(LocalDate date) {
+        return date.format(MEDIUM);
     }
 
     /** Formats a date in full, such as "Saturday 24 October 2026". */

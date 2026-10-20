@@ -26,6 +26,9 @@
             android:name=".AddEventActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".EventDetailsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ListPopupWindow;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,24 +28,20 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * The form for adding or editing an event. It saves the event and returns its ID to MainActivity.
+ * The form for adding or editing an event. It saves the event and returns its ID.
  */
 public class AddEventActivity extends AppCompatActivity {
 
-    /** Extra with the event to edit, or the deleted event in a RESULT_DELETED result. */
+    /** Extra with the event to edit. */
     public static final String EXTRA_EVENT = "event";
     /** Result extra holding the ID of the saved event. */
     public static final String EXTRA_EVENT_ID = "event_id";
-    /** Result code when the edited event was deleted. */
-    public static final int RESULT_DELETED = RESULT_FIRST_USER;
 
     private static final String STATE_TYPE = "type";
     private static final String STATE_STATUS = "status";
     private static final String STATE_DISCARD_SHOWN = "discard_shown";
-    private static final String STATE_DELETE_SHOWN = "delete_shown";
     private static final String STATE_START_TIME = "start_time";
     private static final String STATE_END_TIME = "end_time";
     private static final String STATE_ORIGINAL_TEXTS = "original_texts";
@@ -86,8 +79,6 @@ public class AddEventActivity extends AppCompatActivity {
     // What each field showed when the form opened, to tell whether anything changed.
     private String[] originalTexts;
     private AlertDialog discardDialog;
-    private AlertDialog deleteDialog;
-    private ListPopupWindow moreMenu;
 
     // Enabled only once a field changes, so an unchanged form keeps the system back animation.
     private final OnBackPressedCallback discardCallback = new OnBackPressedCallback(false) {
@@ -159,7 +150,6 @@ public class AddEventActivity extends AppCompatActivity {
         outState.putStringArray(STATE_ORIGINAL_TEXTS, originalTexts);
         outState.putBoolean(STATE_DISCARD_SHOWN,
                 discardDialog != null && discardDialog.isShowing());
-        outState.putBoolean(STATE_DELETE_SHOWN, deleteDialog != null && deleteDialog.isShowing());
     }
 
     @Override
@@ -182,9 +172,6 @@ public class AddEventActivity extends AppCompatActivity {
         if (savedInstanceState.getBoolean(STATE_DISCARD_SHOWN)) {
             showDiscardDialog();
         }
-        if (savedInstanceState.getBoolean(STATE_DELETE_SHOWN)) {
-            showDeleteDialog();
-        }
     }
 
     @Override
@@ -192,36 +179,8 @@ public class AddEventActivity extends AppCompatActivity {
         if (discardDialog != null) {
             discardDialog.dismiss();
         }
-        if (deleteDialog != null) {
-            deleteDialog.dismiss();
-        }
-        if (moreMenu != null) {
-            moreMenu.dismiss();
-        }
         database.close();
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Only an event that is already saved can be deleted.
-        if (eventToEdit != null) {
-            getMenuInflater().inflate(R.menu.menu_more, menu);
-            MenuItem more = menu.findItem(R.id.action_more);
-            // A button set as an action view does not call onOptionsItemSelected by itself.
-            more.getActionView().setOnClickListener(v -> onOptionsItemSelected(more));
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_more) {
-            moreMenu = MoreMenu.show(this, item.getActionView(),
-                    R.layout.item_menu_delete, R.string.menu_delete, this::showDeleteDialog);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void bindViews() {
@@ -349,23 +308,6 @@ public class AddEventActivity extends AppCompatActivity {
                 .setMessage(editing ? R.string.discard_changes_message : R.string.discard_message)
                 .setNegativeButton(R.string.button_keep_editing, null)
                 .setPositiveButton(R.string.button_discard, (dialog, which) -> finish())
-                .show();
-    }
-
-    /** Asks before deleting the event being edited, which then returns RESULT_DELETED. */
-    private void showDeleteDialog() {
-        Event event = Objects.requireNonNull(eventToEdit);
-        deleteDialog = new MaterialAlertDialogBuilder(this,
-                R.style.ThemeOverlay_EventTracker_DestructiveDialog)
-                .setTitle(R.string.delete_title)
-                .setMessage(getString(R.string.delete_message, event.getName(),
-                        EventDates.format(event.getDate())))
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.button_delete, (dialog, which) -> {
-                    database.deleteEvent(event.getId());
-                    setResult(RESULT_DELETED, new Intent().putExtra(EXTRA_EVENT, event));
-                    finish();
-                })
                 .show();
     }
 

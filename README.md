@@ -8,8 +8,8 @@ status.
 ## Features
 
 - Events saved in SQLite and loaded again each time the list is shown.
-- Tap a ticket to edit its event in the same form used to add one.
-- Delete an event from the edit screen's More options menu, with a
+- Tap a ticket to see the event in full, as in Exercise 2. Its More options
+  menu edits the event in the same form used to add one, or deletes it with a
   confirmation dialog and an Undo action.
 - Select several events, from the list's More options menu or by long pressing
   a ticket, and delete them together.
@@ -49,11 +49,12 @@ Error messages follow the GOV.UK Design System guidance [5].
 
 ## Edit and delete
 
-- Leaving the edit form asks first only if a value has changed.
+- Leaving the edit form asks first only if a value has changed. After saving,
+  the details screen shows the changes.
 - Undo saves deleted events again under the same IDs.
 - While selecting, tapping a ticket selects it, Select all selects every event
   the filter shows, and Back or the close button stops selecting.
-- If the filter hides an event that was just saved, the list shows every event
+- If the filter hides an event that was just added, the list shows every event
   again and scrolls to it.
 
 ## Database
@@ -116,22 +117,25 @@ from the command line:
 
 ## Project structure
 
-| File                      | Purpose                                         |
-| ------------------------- | ----------------------------------------------- |
-| `MainActivity.java`       | Event list, filter, selection and messages      |
-| `AddEventActivity.java`   | Add and edit form, delete menu and errors       |
-| `EventDatabase.java`      | SQLite table, queries and the status update     |
-| `EventAdapter.java`       | Month headings, ticket states and statuses      |
-| `TicketDrawable.java`     | Ticket shape with the date stub and perforation |
-| `Event.java`              | Event model                                     |
-| `EventType.java`          | Event types and their label colors              |
-| `EventStatus.java`        | Event statuses and their filter texts           |
-| `EventValidator.java`     | Validation, status rules and duplicate check    |
-| `EventDates.java`         | Date parsing and formatting                     |
-| `EventTimes.java`         | Time slots, lengths and formatting              |
-| `DropdownField.java`      | Menu field that opens on the chosen item        |
-| `MoreMenu.java`           | One-item menu only as wide as its item          |
-| `DatePickerFragment.java` | Date picker dialog hosted in a DialogFragment   |
+| File                        | Purpose                                         |
+| --------------------------- | ----------------------------------------------- |
+| `MainActivity.java`         | Event list, filter, selection and messages      |
+| `EventDetailsActivity.java` | One event in full, with Edit and Delete         |
+| `AddEventActivity.java`     | Add and edit form, time lists and errors        |
+| `EventDatabase.java`        | SQLite table, queries and the status update     |
+| `EventAdapter.java`         | Month headings, tickets and selection           |
+| `TicketState.java`          | Ticket states, colors and status phrases        |
+| `TicketDrawable.java`       | Ticket shape with the date stub and perforation |
+| `Event.java`                | Event model                                     |
+| `EventType.java`            | Event types and their label colors              |
+| `EventStatus.java`          | Event statuses and their filter texts           |
+| `EventValidator.java`       | Validation, status rules and duplicate check    |
+| `EventDates.java`           | Date parsing and formatting                     |
+| `EventTimes.java`           | Time slots, lengths and formatting              |
+| `DropdownField.java`        | Menu field that opens on the chosen item        |
+| `MoreMenu.java`             | Compact menu as wide as its widest item         |
+| `IconSnackbar.java`         | Messages with an icon before their text         |
+| `DatePickerFragment.java`   | Date picker dialog hosted in a DialogFragment   |
 
 ## Sources
 

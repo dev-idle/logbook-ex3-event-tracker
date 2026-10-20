@@ -48,6 +48,7 @@ public class EventDatabase extends SQLiteOpenHelper {
     private static final String START_ORDER = "ORDER BY Date, StartTime, ID";
     private static final String SELECT_ALL = SELECT + START_ORDER;
     private static final String SELECT_BY_STATUS = SELECT + "WHERE Status = ? " + START_ORDER;
+    private static final String SELECT_BY_ID = SELECT + "WHERE ID = ?";
     // An event ends on the next day when its end time is not after its start time.
     private static final String COMPLETE_ENDED = "UPDATE Event SET Status = ? "
             + "WHERE Status = ? AND (CASE WHEN EndTime > StartTime THEN Date "
@@ -150,19 +151,32 @@ public class EventDatabase extends SQLiteOpenHelper {
                 ? getReadableDatabase().rawQuery(SELECT_ALL, null)
                 : getReadableDatabase().rawQuery(SELECT_BY_STATUS, new String[] {status.name()})) {
             while (cursor.moveToNext()) {
-                events.add(new Event(cursor.getLong(0), cursor.getString(1),
-                        LocalDate.parse(cursor.getString(2)), EventTimes.parse(cursor.getString(3)),
-                        EventTimes.parse(cursor.getString(4)), cursor.getString(5),
-                        cursor.getString(6), EventType.valueOf(cursor.getString(7)),
-                        EventStatus.valueOf(cursor.getString(8))));
+                events.add(readEvent(cursor));
             }
         }
         return events;
     }
 
+    /** Returns the saved event with this ID, or null if there is none. */
+    @Nullable
+    public Event getEvent(long id) {
+        try (Cursor cursor = getReadableDatabase()
+                .rawQuery(SELECT_BY_ID, new String[] {String.valueOf(id)})) {
+            return cursor.moveToFirst() ? readEvent(cursor) : null;
+        }
+    }
+
     /** Returns how many events are saved. */
     public long countEvents() {
         return DatabaseUtils.queryNumEntries(getReadableDatabase(), "Event");
+    }
+
+    /** Reads the event in the cursor's current row, whose columns are in the order of SELECT. */
+    private static Event readEvent(Cursor cursor) {
+        return new Event(cursor.getLong(0), cursor.getString(1),
+                LocalDate.parse(cursor.getString(2)), EventTimes.parse(cursor.getString(3)),
+                EventTimes.parse(cursor.getString(4)), cursor.getString(5), cursor.getString(6),
+                EventType.valueOf(cursor.getString(7)), EventStatus.valueOf(cursor.getString(8)));
     }
 
     /** Binds the event's details to parameters 1 to 8, in the order of the Event columns. */
