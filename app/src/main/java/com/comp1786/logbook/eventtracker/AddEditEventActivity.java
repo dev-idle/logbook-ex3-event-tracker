@@ -355,6 +355,11 @@ public class AddEditEventActivity extends AppCompatActivity {
         Event event = new Event(id, name.getValue(), date.getValue(), startTime.getValue(),
                 endTime.getValue(), location.getValue(), organizer.getValue(), type.getValue(),
                 status.getValue());
+        if (event.equals(eventToEdit)) {
+            // Nothing changed, so there is nothing to save or confirm.
+            finish();
+            return;
+        }
         if (id == Event.NO_ID) {
             id = database.insertEvent(event);
         } else {
