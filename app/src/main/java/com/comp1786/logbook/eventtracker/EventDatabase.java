@@ -2,9 +2,12 @@ package com.comp1786.logbook.eventtracker;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+
+import androidx.annotation.Nullable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,8 +43,11 @@ public class EventDatabase extends SQLiteOpenHelper {
             + "(Name, Date, StartTime, EndTime, Location, Organizer, Type, Status, ID) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE = "DELETE FROM Event WHERE ID = ?";
-    private static final String SELECT_ALL = "SELECT ID, Name, Date, StartTime, EndTime, "
-            + "Location, Organizer, Type, Status FROM Event ORDER BY Date, StartTime, ID";
+    private static final String SELECT = "SELECT ID, Name, Date, StartTime, EndTime, "
+            + "Location, Organizer, Type, Status FROM Event ";
+    private static final String START_ORDER = "ORDER BY Date, StartTime, ID";
+    private static final String SELECT_ALL = SELECT + START_ORDER;
+    private static final String SELECT_BY_STATUS = SELECT + "WHERE Status = ? " + START_ORDER;
     // An event ends on the next day when its end time is not after its start time.
     private static final String COMPLETE_ENDED = "UPDATE Event SET Status = ? "
             + "WHERE Status = ? AND (CASE WHEN EndTime > StartTime THEN Date "
@@ -112,8 +118,15 @@ public class EventDatabase extends SQLiteOpenHelper {
 
     /** Returns every saved event in start order. */
     public List<Event> getAllEvents() {
+        return getEvents(null);
+    }
+
+    /** Returns the saved events with this status, or all of them if it is null, in start order. */
+    public List<Event> getEvents(@Nullable EventStatus status) {
         List<Event> events = new ArrayList<>();
-        try (Cursor cursor = getReadableDatabase().rawQuery(SELECT_ALL, null)) {
+        try (Cursor cursor = status == null
+                ? getReadableDatabase().rawQuery(SELECT_ALL, null)
+                : getReadableDatabase().rawQuery(SELECT_BY_STATUS, new String[] {status.name()})) {
             while (cursor.moveToNext()) {
                 events.add(new Event(cursor.getLong(0), cursor.getString(1),
                         LocalDate.parse(cursor.getString(2)), EventTimes.parse(cursor.getString(3)),
@@ -123,6 +136,11 @@ public class EventDatabase extends SQLiteOpenHelper {
             }
         }
         return events;
+    }
+
+    /** Returns how many events are saved. */
+    public long countEvents() {
+        return DatabaseUtils.queryNumEntries(getReadableDatabase(), "Event");
     }
 
     /** Binds the event's details to parameters 1 to 8, in the order of the Event columns. */

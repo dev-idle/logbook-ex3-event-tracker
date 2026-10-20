@@ -77,6 +77,19 @@
         <item name="colorOnContainer">?attr/colorPrimary</item>
     </style>
 
+    <!-- Icons tell the statuses apart, so every chosen chip takes the same blue. -->
+    <style name="Widget.EventTracker.FilterChip" parent="Widget.Material3.Chip.Filter">
+        <item name="chipIconTint">?attr/colorOnSurfaceVariant</item>
+        <item name="chipIconVisible">true</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.FilterChip</item>
+    </style>
+
+    <!-- Chosen filters take the container blue of the tickets, not the gray secondary. -->
+    <style name="ThemeOverlay.EventTracker.FilterChip" parent="ThemeOverlay.Material3.Chip">
+        <item name="colorSecondaryContainer">?attr/colorPrimaryContainer</item>
+        <item name="colorOnSecondaryContainer">?attr/colorOnPrimaryContainer</item>
+    </style>
+
     <!-- The platform date picker takes its accents from attributes Material sets to secondary. -->
     <style name="ThemeOverlay.EventTracker.Picker" parent="ThemeOverlay.Material3.Dialog">
         <item name="android:colorAccent">?attr/colorPrimary</item>

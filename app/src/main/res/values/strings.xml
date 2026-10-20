@@ -7,6 +7,23 @@
         <item quantity="one">%d event</item>
         <item quantity="other">%d events</item>
     </plurals>
+    <!-- Shown while the list is filtered by status -->
+    <plurals name="event_count_upcoming">
+        <item quantity="one">%d upcoming event</item>
+        <item quantity="other">%d upcoming events</item>
+    </plurals>
+    <plurals name="event_count_completed">
+        <item quantity="one">%d completed event</item>
+        <item quantity="other">%d completed events</item>
+    </plurals>
+    <plurals name="event_count_cancelled">
+        <item quantity="one">%d cancelled event</item>
+        <item quantity="other">%d cancelled events</item>
+    </plurals>
+    <string name="empty_upcoming">No upcoming events</string>
+    <string name="empty_completed">No completed events</string>
+    <string name="empty_cancelled">No cancelled events</string>
+    <string name="empty_filtered_message">Tap the filter again to see every event.</string>
     <!-- A ticket's status with when the event is, such as "Upcoming in 4 days" -->
     <string name="status_live">Happening now</string>
     <string name="status_upcoming_today">Upcoming today</string>

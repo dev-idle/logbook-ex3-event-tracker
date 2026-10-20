@@ -1,6 +1,7 @@
 package com.comp1786.logbook.eventtracker;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -24,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -32,14 +36,25 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String PREFERENCES_NAME = "settings";
+    private static final String KEY_STATUS_FILTER = "status_filter";
+
     private MaterialToolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbar;
+    private View filterBar;
+    private ChipGroup filterGroup;
     private RecyclerView eventList;
     private View emptyView;
+    private TextView emptyTitle;
+    private TextView emptyMessage;
     private ExtendedFloatingActionButton addButton;
 
     private EventDatabase database;
     private EventAdapter adapter;
+    private SharedPreferences preferences;
+    // The status the list shows, or null for every event.
+    @Nullable
+    private EventStatus filter;
 
     private final ActivityResultLauncher<Intent> addEventLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -83,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
         });
         eventList.setLayoutManager(layoutManager);
         eventList.setAdapter(adapter);
+        preferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
+        String savedFilter = preferences.getString(KEY_STATUS_FILTER, "");
+        filter = savedFilter.isEmpty() ? null : EventStatus.valueOf(savedFilter);
+        buildFilterChips();
 
         // Shrinks to the icon while scrolling down, so it covers less of the list.
         eventList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -130,9 +149,41 @@ public class MainActivity extends AppCompatActivity {
     private void bindViews() {
         toolbar = findViewById(R.id.toolbar);
         collapsingToolbar = findViewById(R.id.collapsing_toolbar);
+        filterBar = findViewById(R.id.filter_bar);
+        filterGroup = findViewById(R.id.filter_group);
         eventList = findViewById(R.id.event_list);
         emptyView = findViewById(R.id.empty_view);
+        emptyTitle = findViewById(R.id.empty_title);
+        emptyMessage = findViewById(R.id.empty_message);
         addButton = findViewById(R.id.add_button);
+    }
+
+    /** Adds a chip for each status, with the saved filter chosen. No chosen chip shows all. */
+    private void buildFilterChips() {
+        for (EventStatus status : EventStatus.values()) {
+            addFilterChip(status);
+        }
+        filterGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            filter = checkedIds.isEmpty()
+                    ? null : (EventStatus) group.findViewById(checkedIds.get(0)).getTag();
+            preferences.edit()
+                    .putString(KEY_STATUS_FILTER, filter == null ? "" : filter.name())
+                    .apply();
+            showEvents();
+        });
+    }
+
+    private void addFilterChip(EventStatus status) {
+        Chip chip = (Chip) getLayoutInflater()
+                .inflate(R.layout.item_filter_chip, filterGroup, false);
+        chip.setId(View.generateViewId());
+        chip.setChipIconResource(status.getIconRes());
+        chip.setText(status.getLabelRes());
+        chip.setTag(status);
+        // The check takes the place of the icon while chosen, as in Material 3.
+        chip.setOnCheckedChangeListener((button, checked) -> chip.setChipIconVisible(!checked));
+        chip.setChecked(status == filter);
+        filterGroup.addView(chip);
     }
 
     private void openAddEvent() {
@@ -150,9 +201,16 @@ public class MainActivity extends AppCompatActivity {
         if (result.getResultCode() != RESULT_OK || data == null) {
             return;
         }
-        long id = data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID);
-        eventList.scrollToPosition(adapter.positionOf(id));
+        scrollToEvent(data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
         makeSnackbar(messageRes, R.drawable.ic_check_circle, Snackbar.LENGTH_SHORT).show();
+    }
+
+    /** Scrolls to an event, first showing every event if the filter hides it. */
+    private void scrollToEvent(long id) {
+        if (adapter.positionOf(id) == RecyclerView.NO_POSITION && filter != null) {
+            filterGroup.clearCheck();
+        }
+        eventList.scrollToPosition(adapter.positionOf(id));
     }
 
     /** Confirms that an event was deleted, with an action that saves it again. */
@@ -168,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         snackbar.setAction(R.string.button_undo, v -> {
             database.restoreEvent(event);
             showEvents();
-            eventList.scrollToPosition(adapter.positionOf(event.getId()));
+            scrollToEvent(event.getId());
         });
         snackbar.show();
     }
@@ -186,22 +244,33 @@ public class MainActivity extends AppCompatActivity {
         return snackbar;
     }
 
-    /** Shows the events and their number, or the empty state when there are none. */
+    /** Shows the events the filter keeps and their number, or the empty state if there are none. */
     private void showEvents() {
         // Upcoming events that have ended become completed before they are shown.
         LocalDateTime now = LocalDateTime.now();
         database.completeEndedEvents(now);
-        List<Event> events = database.getAllEvents();
+        boolean nothingSaved = database.countEvents() == 0;
+        if (nothingSaved && filter != null) {
+            // The chips hide while nothing is saved, so the list goes back to every event.
+            filterGroup.clearCheck();
+            return;
+        }
+        List<Event> events = database.getEvents(filter);
         // The same time, so every ticket shown as ended is also completed.
         adapter.setEvents(events, now);
+        filterBar.setVisibility(nothingSaved ? View.GONE : View.VISIBLE);
         boolean empty = events.isEmpty();
         emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
+        emptyTitle.setText(filter == null ? R.string.empty_title : filter.getEmptyRes());
+        emptyMessage.setText(
+                filter == null ? R.string.empty_message : R.string.empty_filtered_message);
         if (empty) {
             // The button may still be shrunk from scrolling, and the empty state needs its label.
             addButton.extend();
         }
         collapsingToolbar.setSubtitle(empty ? null : getResources().getQuantityString(
-                R.plurals.event_count, events.size(), events.size()));
+                filter == null ? R.plurals.event_count : filter.getCountRes(),
+                events.size(), events.size()));
         // With no events there is nothing to scroll, so the app bar stays expanded.
         AppBarLayout.LayoutParams params =
                 (AppBarLayout.LayoutParams) collapsingToolbar.getLayoutParams();
