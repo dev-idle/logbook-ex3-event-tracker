@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         }
         long id = data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID);
         eventList.scrollToPosition(adapter.positionOf(id));
-        Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show();
+        makeSnackbar(messageRes, R.drawable.ic_check_circle, Snackbar.LENGTH_SHORT).show();
     }
 
     /** Confirms that an event was deleted, with an action that saves it again. */
