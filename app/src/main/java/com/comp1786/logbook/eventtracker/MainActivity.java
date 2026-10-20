@@ -1,7 +1,6 @@
 package com.comp1786.logbook.eventtracker;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,8 +40,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements EventAdapter.OnEventClickListener {
 
-    private static final String PREFERENCES_NAME = "settings";
-    private static final String KEY_STATUS_FILTER = "status_filter";
+    private static final String STATE_FILTER = "filter";
     private static final String STATE_SELECTED_IDS = "selected_ids";
     private static final String STATE_DELETE_SHOWN = "delete_shown";
 
@@ -58,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
 
     private EventDatabase database;
     private EventAdapter adapter;
-    private SharedPreferences preferences;
     // The status the list shows, or null for every event.
     @Nullable
     private EventStatus filter;
@@ -117,9 +114,10 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         });
         eventList.setLayoutManager(layoutManager);
         eventList.setAdapter(adapter);
-        preferences = getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE);
-        String savedFilter = preferences.getString(KEY_STATUS_FILTER, "");
-        filter = savedFilter.isEmpty() ? null : EventStatus.valueOf(savedFilter);
+        // Kept only across rotation, so the app always opens on every saved event.
+        String savedFilter = savedInstanceState == null
+                ? null : savedInstanceState.getString(STATE_FILTER);
+        filter = savedFilter == null ? null : EventStatus.valueOf(savedFilter);
         buildFilterChips();
 
         // Shrinks to the icon while scrolling down, so it covers less of the list.
@@ -146,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (filter != null) {
+            outState.putString(STATE_FILTER, filter.name());
+        }
         if (adapter.isSelecting()) {
             outState.putLongArray(STATE_SELECTED_IDS, adapter.getSelectedIds());
         }
@@ -280,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         addButton = findViewById(R.id.add_button);
     }
 
-    /** Adds a chip for each status, with the saved filter chosen. No chosen chip shows all. */
+    /** Adds a chip for each status, with the current filter chosen. No chosen chip shows all. */
     private void buildFilterChips() {
         for (EventStatus status : EventStatus.values()) {
             addFilterChip(status);
@@ -288,9 +289,6 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         filterGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
             filter = checkedIds.isEmpty()
                     ? null : (EventStatus) group.findViewById(checkedIds.get(0)).getTag();
-            preferences.edit()
-                    .putString(KEY_STATUS_FILTER, filter == null ? "" : filter.name())
-                    .apply();
             showEvents();
         });
     }

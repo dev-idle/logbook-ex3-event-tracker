@@ -16,8 +16,8 @@ status.
 - A status for each event: Upcoming, Completed or Cancelled, chosen from a
   dropdown.
 - Upcoming events become Completed once they end.
-- Filter chips [1] that show only the events with one status. The chosen
-  filter is kept between launches.
+- Filter chips [1] that show only the events with one status. The app always
+  opens on every saved event.
 - Snackbars [2] that confirm when an event is added, updated or deleted.
 - From Exercise 2: tickets in start order under month headings, the date
   picker and time lists, light and dark themes from seed #2E6FD8 [3], two
@@ -101,8 +101,6 @@ It differs from the brief in three places:
   method, which runs any SQL string with `execSQL`.
 - Cursors and statements are closed with try-with-resources.
 
-The chosen filter is saved with SharedPreferences, as in the brief [11].
-
 ## Build and run
 
 - Android Studio with its bundled JDK, AGP 9.4.1 and Gradle 9.6.0.
@@ -156,5 +154,3 @@ from the command line:
    https://developer.android.com/training/data-storage/sqlite
 10. Android Developers. SQLiteStatement.
     https://developer.android.com/reference/android/database/sqlite/SQLiteStatement
-11. Android Developers. Save simple data with SharedPreferences.
-    https://developer.android.com/training/data-storage/shared-preferences
