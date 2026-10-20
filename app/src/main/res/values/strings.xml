@@ -52,6 +52,8 @@
     <string name="next_day_marker" translatable="false">+1</string>
     <string name="description_time_range">From %1$s to %2$s, %3$s</string>
     <string name="description_time_range_next_day">From %1$s to %2$s the next day, %3$s</string>
+    <string name="description_location">Location: %1$s</string>
+    <string name="description_organizer">Organizer: %1$s</string>
     <string name="button_add_event">Add event</string>
     <string name="message_event_added">Event added</string>
     <string name="message_event_updated">Event updated</string>
@@ -126,8 +128,8 @@
     <string name="error_date_format">Event date must be in the format DD/MM/YYYY</string>
     <string name="error_date_not_real">Event date must be a real date</string>
     <string name="error_date_out_of_range">Event date must be between %1$s and %2$s</string>
-    <string name="error_start_time_required">Enter the start time</string>
-    <string name="error_end_time_required">Enter the end time</string>
+    <string name="error_start_time_required">Select the start time</string>
+    <string name="error_end_time_required">Select the end time</string>
     <string name="error_end_time_same">End time must be different from the start time</string>
     <string name="error_location_required">Enter the event location</string>
     <string name="error_organizer_required">Enter the event organizer</string>

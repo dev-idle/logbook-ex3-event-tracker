@@ -234,7 +234,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         state.showStatus(holder.statusText, event, row.daysAway);
         bindTimes(holder, event);
         holder.locationText.setText(event.getLocation());
+        holder.locationText.setContentDescription(
+                context.getString(R.string.description_location, event.getLocation()));
         holder.organizerText.setText(event.getOrganizer());
+        holder.organizerText.setContentDescription(
+                context.getString(R.string.description_organizer, event.getOrganizer()));
         state.showCancelled(holder.nameText, holder.typeLabel, type,
                 holder.startTimeText, holder.endTimeText);
     }
@@ -245,12 +249,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         // Selecting the view also checks the circle, outlines the ticket and tells screen readers.
         holder.itemView.setSelected(selected);
         holder.selectionCheck.setVisibility(selecting ? View.VISIBLE : View.GONE);
-        // Screen readers say "Double tap to select" while selecting, otherwise "to view details".
-        int actionRes = !selecting ? R.string.description_view_details
-                : selected ? R.string.description_deselect : R.string.description_select;
+        // Screen readers say "Double tap to view details" and "Double tap and hold to select".
+        Context context = holder.itemView.getContext();
+        int selectRes = selected ? R.string.description_deselect : R.string.description_select;
         ViewCompat.replaceAccessibilityAction(holder.itemView,
                 AccessibilityActionCompat.ACTION_CLICK,
-                holder.itemView.getContext().getString(actionRes), null);
+                context.getString(selecting ? selectRes : R.string.description_view_details), null);
+        ViewCompat.replaceAccessibilityAction(holder.itemView,
+                AccessibilityActionCompat.ACTION_LONG_CLICK, context.getString(selectRes), null);
     }
 
     /** Shows the start, end and length like a boarding pass, read out as one sentence. */

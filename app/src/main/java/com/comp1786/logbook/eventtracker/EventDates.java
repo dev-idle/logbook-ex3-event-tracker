@@ -20,19 +20,19 @@ public final class EventDates {
     private static final DateTimeFormatter INPUT = DateTimeFormatter.ofPattern("d/M/uuuu")
             .withResolverStyle(ResolverStyle.STRICT);
     private static final DateTimeFormatter OUTPUT = DateTimeFormatter.ofPattern("dd/MM/uuuu");
-    // Day and month names are in English to match the rest of the app.
+    // Day and month names are in English to match the app, with Sep rather than the UK Sept.
     private static final DateTimeFormatter SHORT_MONTH =
-            DateTimeFormatter.ofPattern("MMM", Locale.UK);
+            DateTimeFormatter.ofPattern("MMM", Locale.US);
     private static final DateTimeFormatter DAY_OF_MONTH =
-            DateTimeFormatter.ofPattern("d", Locale.UK);
+            DateTimeFormatter.ofPattern("d", Locale.US);
     private static final DateTimeFormatter SHORT_DAY_OF_WEEK =
-            DateTimeFormatter.ofPattern("EEE", Locale.UK);
+            DateTimeFormatter.ofPattern("EEE", Locale.US);
     private static final DateTimeFormatter MEDIUM =
-            DateTimeFormatter.ofPattern("EEE d MMM uuuu", Locale.UK);
+            DateTimeFormatter.ofPattern("EEE d MMM uuuu", Locale.US);
     private static final DateTimeFormatter LONG =
-            DateTimeFormatter.ofPattern("EEEE d MMMM uuuu", Locale.UK);
+            DateTimeFormatter.ofPattern("EEEE d MMMM uuuu", Locale.US);
     private static final DateTimeFormatter MONTH =
-            DateTimeFormatter.ofPattern("MMMM uuuu", Locale.UK);
+            DateTimeFormatter.ofPattern("MMMM uuuu", Locale.US);
 
     private EventDates() {
     }
