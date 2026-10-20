@@ -11,6 +11,8 @@ status.
 - Tap a ticket to edit its event in the same form used to add one.
 - Delete an event from the edit screen's More options menu, with a
   confirmation dialog and an Undo action.
+- Select several events, from the list's More options menu or by long pressing
+  a ticket, and delete them together.
 - A status for each event: Upcoming, Completed or Cancelled, chosen from a
   dropdown.
 - Upcoming events become Completed once they end.
@@ -48,7 +50,9 @@ Error messages follow the GOV.UK Design System guidance [5].
 ## Edit and delete
 
 - Leaving the edit form asks first only if a value has changed.
-- Undo saves a deleted event again under the same ID.
+- Undo saves deleted events again under the same IDs.
+- While selecting, tapping a ticket selects it, Select all selects every event
+  the filter shows, and Back or the close button stops selecting.
 - If the filter hides an event that was just saved, the list shows every event
   again and scrolls to it.
 
@@ -75,6 +79,8 @@ The `Event` table in `events.db`:
   Completed when the list loads.
 - Every statement binds its values, so text such as a quote in a name cannot
   break or change a query.
+- Deleting several events, and undoing it, runs in one transaction, so either
+  every event changes or none does.
 - Database calls run on the main thread, as in the module brief, because the
   table stays small. A larger app would run them on a background thread.
 
@@ -114,7 +120,7 @@ from the command line:
 
 | File                      | Purpose                                         |
 | ------------------------- | ----------------------------------------------- |
-| `MainActivity.java`       | Event list, filter, empty state and messages    |
+| `MainActivity.java`       | Event list, filter, selection and messages      |
 | `AddEventActivity.java`   | Add and edit form, delete menu and errors       |
 | `EventDatabase.java`      | SQLite table, queries and the status update     |
 | `EventAdapter.java`       | Month headings, ticket states and statuses      |
@@ -126,6 +132,7 @@ from the command line:
 | `EventDates.java`         | Date parsing and formatting                     |
 | `EventTimes.java`         | Time slots, lengths and formatting              |
 | `DropdownField.java`      | Menu field that opens on the chosen item        |
+| `MoreMenu.java`           | One-item menu only as wide as its item          |
 | `DatePickerFragment.java` | Date picker dialog hosted in a DialogFragment   |
 
 ## Sources

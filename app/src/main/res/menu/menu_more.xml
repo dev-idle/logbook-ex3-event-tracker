@@ -6,5 +6,6 @@
         android:id="@+id/action_more"
         android:icon="@drawable/ic_more_vert"
         android:title="@string/menu_more"
+        app:actionLayout="@layout/action_more"
         app:showAsAction="always" />
 </menu>

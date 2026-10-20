@@ -11,6 +11,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.util.StateSet;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -23,9 +24,12 @@ import com.google.android.material.color.MaterialColors;
  */
 public class TicketDrawable extends Drawable {
 
+    private static final int[] SELECTED_STATE = {android.R.attr.state_selected};
+
     private final Paint bodyPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint stubPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint perforationPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint selectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Path ticket = new Path();
     private final Path stub = new Path();
     private final float stubWidth;
@@ -33,6 +37,7 @@ public class TicketDrawable extends Drawable {
     private final float notchRadius;
     private final float dashLength;
     private int alpha = 255;
+    private boolean selected;
 
     public TicketDrawable(Context context) {
         Resources res = context.getResources();
@@ -46,6 +51,11 @@ public class TicketDrawable extends Drawable {
         perforationPaint.setStyle(Paint.Style.STROKE);
         perforationPaint.setStrokeWidth(res.getDimension(R.dimen.ticket_perforation_width));
         perforationPaint.setPathEffect(new DashPathEffect(new float[] {dashLength, dashLength}, 0));
+        selectionPaint.setColor(MaterialColors.getColor(context,
+                androidx.appcompat.R.attr.colorPrimary, getClass().getName()));
+        selectionPaint.setStyle(Paint.Style.STROKE);
+        // Twice as wide, as the half outside the ticket is clipped off.
+        selectionPaint.setStrokeWidth(2 * res.getDimension(R.dimen.ticket_selection_width));
     }
 
     public void setStubColor(@ColorInt int color) {
@@ -77,6 +87,29 @@ public class TicketDrawable extends Drawable {
         canvas.drawPath(ticket, bodyPaint);
         canvas.drawPath(stub, stubPaint);
         canvas.drawLine(x, bounds.top + inset, x, bounds.bottom - inset, perforationPaint);
+        if (selected) {
+            // Clipped to the ticket, so the outline follows the notches on the inside.
+            canvas.save();
+            canvas.clipPath(ticket);
+            canvas.drawPath(ticket, selectionPaint);
+            canvas.restore();
+        }
+    }
+
+    @Override
+    public boolean isStateful() {
+        return true;
+    }
+
+    /** Outlines the ticket while its view is selected. */
+    @Override
+    protected boolean onStateChange(@NonNull int[] state) {
+        boolean nowSelected = StateSet.stateSetMatches(SELECTED_STATE, state);
+        if (nowSelected == selected) {
+            return false;
+        }
+        selected = nowSelected;
+        return true;
     }
 
     @Override
@@ -85,6 +118,7 @@ public class TicketDrawable extends Drawable {
         bodyPaint.setAlpha(alpha);
         stubPaint.setAlpha(alpha);
         perforationPaint.setAlpha(alpha);
+        selectionPaint.setAlpha(alpha);
         invalidateSelf();
     }
 
@@ -98,6 +132,7 @@ public class TicketDrawable extends Drawable {
         bodyPaint.setColorFilter(colorFilter);
         stubPaint.setColorFilter(colorFilter);
         perforationPaint.setColorFilter(colorFilter);
+        selectionPaint.setColorFilter(colorFilter);
         invalidateSelf();
     }
 

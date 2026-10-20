@@ -95,12 +95,34 @@ public class EventDatabase extends SQLiteOpenHelper {
         }
     }
 
-    /** Saves a deleted event again under its ID, to undo the delete. */
-    public void restoreEvent(Event event) {
-        try (SQLiteStatement statement = getWritableDatabase().compileStatement(RESTORE)) {
-            bindDetails(statement, event);
-            statement.bindLong(9, event.getId());
-            statement.executeInsert();
+    /** Deletes these events in one transaction, so either all of them go or none do. */
+    public void deleteEvents(List<Event> events) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try (SQLiteStatement statement = db.compileStatement(DELETE)) {
+            for (Event event : events) {
+                statement.bindLong(1, event.getId());
+                statement.executeUpdateDelete();
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /** Saves deleted events again under their IDs, to undo a delete, in one transaction. */
+    public void restoreEvents(List<Event> events) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try (SQLiteStatement statement = db.compileStatement(RESTORE)) {
+            for (Event event : events) {
+                bindDetails(statement, event);
+                statement.bindLong(9, event.getId());
+                statement.executeInsert();
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 

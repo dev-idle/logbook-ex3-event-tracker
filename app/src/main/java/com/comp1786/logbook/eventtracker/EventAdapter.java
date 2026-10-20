@@ -26,8 +26,11 @@ import java.time.Period;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Shows the events as tickets with all their details, under a heading for each month.
@@ -36,9 +39,13 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private static final int TYPE_MONTH = 0;
     private static final int TYPE_EVENT = 1;
+    // Sent when only the selection changes, so the rest of each ticket is not bound again.
+    private static final Object SELECTION_CHANGED = new Object();
 
     private final OnEventClickListener listener;
     private List<Row> rows = new ArrayList<>();
+    private final Set<Long> selectedIds = new LinkedHashSet<>();
+    private boolean selecting;
 
     public EventAdapter(OnEventClickListener listener) {
         this.listener = listener;
@@ -49,7 +56,91 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         List<Row> newRows = buildRows(events, now);
         DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new RowDiff(rows, newRows));
         rows = newRows;
+        // An event that is no longer shown cannot stay selected.
+        Set<Long> shownIds = new HashSet<>();
+        for (Event event : events) {
+            shownIds.add(event.getId());
+        }
+        selectedIds.retainAll(shownIds);
         diff.dispatchUpdatesTo(this);
+    }
+
+    public boolean isSelecting() {
+        return selecting;
+    }
+
+    /** Shows or hides the circles for selecting tickets. Stopping deselects every ticket. */
+    public void setSelecting(boolean selecting) {
+        this.selecting = selecting;
+        if (!selecting) {
+            selectedIds.clear();
+        }
+        notifyItemRangeChanged(0, rows.size(), SELECTION_CHANGED);
+    }
+
+    /** Selects the event, or deselects it if it is already selected. */
+    public void toggleSelected(long id) {
+        if (!selectedIds.remove(id)) {
+            selectedIds.add(id);
+        }
+        notifyItemChanged(positionOf(id), SELECTION_CHANGED);
+    }
+
+    /** Selects every event shown. */
+    public void selectAll() {
+        for (Row row : rows) {
+            if (row.event != null) {
+                selectedIds.add(row.event.getId());
+            }
+        }
+        notifyItemRangeChanged(0, rows.size(), SELECTION_CHANGED);
+    }
+
+    public void clearSelection() {
+        selectedIds.clear();
+        notifyItemRangeChanged(0, rows.size(), SELECTION_CHANGED);
+    }
+
+    /** Returns true if every event shown is selected. */
+    public boolean isAllSelected() {
+        for (Row row : rows) {
+            if (row.event != null && !selectedIds.contains(row.event.getId())) {
+                return false;
+            }
+        }
+        return !selectedIds.isEmpty();
+    }
+
+    /** Selects the events with these IDs, such as the ones selected before a rotation. */
+    public void select(long[] ids) {
+        for (long id : ids) {
+            selectedIds.add(id);
+        }
+        notifyItemRangeChanged(0, rows.size(), SELECTION_CHANGED);
+    }
+
+    public int getSelectedCount() {
+        return selectedIds.size();
+    }
+
+    public long[] getSelectedIds() {
+        long[] ids = new long[selectedIds.size()];
+        int i = 0;
+        for (long id : selectedIds) {
+            ids[i++] = id;
+        }
+        return ids;
+    }
+
+    /** Returns the selected events in list order. */
+    public List<Event> getSelectedEvents() {
+        List<Event> events = new ArrayList<>();
+        for (Row row : rows) {
+            if (row.event != null && selectedIds.contains(row.event.getId())) {
+                events.add(row.event);
+            }
+        }
+        return events;
     }
 
     /** Returns the position of the event with this ID, or NO_POSITION if it is not shown. */
@@ -87,6 +178,13 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 listener.onEventClick(rows.get(position).event);
             }
         });
+        holder.itemView.setOnLongClickListener(v -> {
+            int position = holder.getBindingAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                listener.onEventLongClick(rows.get(position).event);
+            }
+            return true;
+        });
         return holder;
     }
 
@@ -97,6 +195,17 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             ((MonthViewHolder) holder).monthText.setText(EventDates.formatMonth(row.month));
         } else {
             bindEvent((EventViewHolder) holder, row);
+            bindSelection((EventViewHolder) holder, row.event);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
+            @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else if (holder instanceof EventViewHolder) {
+            bindSelection((EventViewHolder) holder, rows.get(position).event);
         }
     }
 
@@ -133,6 +242,20 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.locationText.setText(event.getLocation());
         holder.organizerText.setText(event.getOrganizer());
         bindCancelled(holder, type, state == TicketState.CANCELLED);
+    }
+
+    /** Shows the circle while selecting, checked and outlined when the ticket is selected. */
+    private void bindSelection(EventViewHolder holder, Event event) {
+        boolean selected = selectedIds.contains(event.getId());
+        // Selecting the view also checks the circle, outlines the ticket and tells screen readers.
+        holder.itemView.setSelected(selected);
+        holder.selectionCheck.setVisibility(selecting ? View.VISIBLE : View.GONE);
+        // Screen readers say "Double tap to select" while selecting, otherwise "to edit event".
+        int actionRes = !selecting ? R.string.description_edit_event
+                : selected ? R.string.description_deselect : R.string.description_select;
+        ViewCompat.replaceAccessibilityAction(holder.itemView,
+                AccessibilityActionCompat.ACTION_CLICK,
+                holder.itemView.getContext().getString(actionRes), null);
     }
 
     /** Grays out a cancelled ticket and strikes through its name, or shows it as usual. */
@@ -345,9 +468,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    /** Called when a ticket is tapped. */
+    /** Called when a ticket is tapped or long pressed. */
     public interface OnEventClickListener {
         void onEventClick(Event event);
+
+        void onEventLongClick(Event event);
     }
 
     /** The view of one month heading. */
@@ -379,6 +504,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private final TextView nextDayText;
         private final TextView locationText;
         private final TextView organizerText;
+        private final View selectionCheck;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -388,9 +514,10 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             // Without a mask, the ripple is clipped to the ticket shape.
             itemView.setBackground(
                     new RippleDrawable(ColorStateList.valueOf(rippleColor), ticket, null));
-            // Screen readers say "Double tap to edit event".
-            ViewCompat.replaceAccessibilityAction(itemView, AccessibilityActionCompat.ACTION_CLICK,
-                    itemView.getContext().getString(R.string.description_edit_event), null);
+            // Screen readers say "Double tap and hold to select".
+            ViewCompat.replaceAccessibilityAction(itemView,
+                    AccessibilityActionCompat.ACTION_LONG_CLICK,
+                    itemView.getContext().getString(R.string.description_select), null);
             dateStub = itemView.findViewById(R.id.date_stub);
             monthText = itemView.findViewById(R.id.event_month);
             dayText = itemView.findViewById(R.id.event_day);
@@ -405,6 +532,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             nextDayText = itemView.findViewById(R.id.next_day);
             locationText = itemView.findViewById(R.id.event_location);
             organizerText = itemView.findViewById(R.id.event_organizer);
+            selectionCheck = itemView.findViewById(R.id.selection_check);
         }
     }
 }

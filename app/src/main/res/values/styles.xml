@@ -10,18 +10,9 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <!-- Medium flexible app bar from the Material 1.14 tokens; Large is deprecated. -->
-    <style name="Widget.EventTracker.CollapsingToolbar"
-        parent="Widget.Material3.CollapsingToolbar.Medium">
-        <item name="collapsedSubtitleTextAppearance">?attr/textAppearanceBodyMedium</item>
-        <item name="collapsedSubtitleTextColor">?attr/colorOnSurfaceVariant</item>
-        <item name="expandedSubtitleTextAppearance">?attr/textAppearanceLabelLarge</item>
-        <item name="expandedSubtitleTextColor">?attr/colorOnSurfaceVariant</item>
-        <!-- Below the toolbar row, so the title stays put with or without a subtitle. -->
-        <item name="expandedTitleGravity">top|start</item>
-        <item name="expandedTitleMarginTop">?attr/actionBarSize</item>
-        <item name="expandedTitleSpacing">@dimen/app_bar_title_spacing</item>
-        <item name="expandedTitleTextAppearance">?attr/textAppearanceHeadlineMedium</item>
+    <!-- A large title on the same row as the buttons. -->
+    <style name="Widget.EventTracker.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">?attr/textAppearanceHeadlineMedium</item>
     </style>
 
     <!-- Small extended FAB tokens, colored as in the Material FAB theming guide. -->
@@ -96,10 +87,23 @@
         <item name="android:colorControlActivated">?attr/colorPrimary</item>
     </style>
 
-    <!-- Opens below its button and ends under its dots, which sit 24dp from the screen edge. -->
+    <!-- Opens below its button and ends under its dots, on the 16dp keyline. -->
     <style name="Widget.EventTracker.OverflowMenu" parent="Widget.Material3.PopupMenu.Overflow">
         <item name="overlapAnchor">false</item>
         <item name="android:popupBackground">@drawable/bg_overflow_menu</item>
+    </style>
+
+    <!-- Material 3 menu item with a leading icon, for the menus MoreMenu opens. -->
+    <style name="Widget.EventTracker.MenuItem" parent="">
+        <item name="android:drawablePadding">@dimen/space_medium</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingStart">@dimen/space_medium</item>
+        <item name="android:paddingEnd">@dimen/space_medium</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="drawableTint">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <!-- Each field keeps a line for its message, so an error does not move the form. -->

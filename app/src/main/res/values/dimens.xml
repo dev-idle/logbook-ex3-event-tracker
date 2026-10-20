@@ -15,15 +15,15 @@
     <dimen name="corner_small">8dp</dimen>
     <dimen name="button_height">56dp</dimen>
 
-    <!-- Medium flexible app bar with a subtitle, from the Material 1.14 tokens. -->
-    <dimen name="app_bar_height">136dp</dimen>
-    <dimen name="app_bar_title_spacing">4dp</dimen>
+    <!-- Moves the More options button toward the edge, so its dots end on the 16dp keyline -->
+    <dimen name="more_button_shift">6dp</dimen>
 
     <dimen name="ticket_stub_width">64dp</dimen>
     <dimen name="ticket_corner_radius">16dp</dimen>
     <dimen name="ticket_notch_radius">8dp</dimen>
     <dimen name="ticket_perforation_width">1dp</dimen>
     <dimen name="ticket_perforation_dash">4dp</dimen>
+    <dimen name="ticket_selection_width">2dp</dimen>
     <dimen name="live_dot_padding">6dp</dimen>
     <dimen name="ticket_time_line_height">1dp</dimen>
 

@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -208,7 +206,10 @@ public class AddEventActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Only an event that is already saved can be deleted.
         if (eventToEdit != null) {
-            getMenuInflater().inflate(R.menu.menu_edit_event, menu);
+            getMenuInflater().inflate(R.menu.menu_more, menu);
+            MenuItem more = menu.findItem(R.id.action_more);
+            // A button set as an action view does not call onOptionsItemSelected by itself.
+            more.getActionView().setOnClickListener(v -> onOptionsItemSelected(more));
         }
         return true;
     }
@@ -216,7 +217,8 @@ public class AddEventActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_more) {
-            showMoreMenu(toolbar.findViewById(R.id.action_more));
+            moreMenu = MoreMenu.show(this, item.getActionView(),
+                    R.layout.item_menu_delete, R.string.menu_delete, this::showDeleteDialog);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -348,28 +350,6 @@ public class AddEventActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.button_keep_editing, null)
                 .setPositiveButton(R.string.button_discard, (dialog, which) -> finish())
                 .show();
-    }
-
-    /** Opens the menu under its button, only as wide as its item, unlike the overflow menu. */
-    private void showMoreMenu(View anchor) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_menu_delete,
-                new String[] {getString(R.string.menu_delete)});
-        View item = adapter.getView(0, null, toolbar);
-        // Measured before it is attached, so it needs a direction to place its start icon.
-        item.setLayoutDirection(toolbar.getLayoutDirection());
-        item.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        moreMenu =
-                new ListPopupWindow(this, null, androidx.appcompat.R.attr.actionOverflowMenuStyle);
-        moreMenu.setAdapter(adapter);
-        moreMenu.setAnchorView(anchor);
-        moreMenu.setDropDownGravity(Gravity.END);
-        moreMenu.setContentWidth(item.getMeasuredWidth());
-        moreMenu.setModal(true);
-        moreMenu.setOnItemClickListener((parent, view, position, id) -> {
-            moreMenu.dismiss();
-            showDeleteDialog();
-        });
-        moreMenu.show();
     }
 
     /** Asks before deleting the event being edited, which then returns RESULT_DELETED. */

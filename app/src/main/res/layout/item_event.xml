@@ -46,20 +46,35 @@
             tools:text="Sat" />
     </LinearLayout>
 
+    <!-- Only the name makes room for the check, so the rows below keep their width. -->
     <TextView
         android:id="@+id/event_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/card_padding"
-        android:layout_marginEnd="@dimen/card_padding"
+        android:layout_marginEnd="@dimen/space_small"
         android:ellipsize="end"
         android:maxLines="2"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:textColor="?attr/colorOnSurface"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/selection_check"
         app:layout_constraintStart_toEndOf="@id/date_stub"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginEnd="@dimen/card_padding"
         tools:text="Android Dev Summit" />
+
+    <!-- Shown while selecting. Screen readers hear "Selected" from the ticket itself. -->
+    <ImageView
+        android:id="@+id/selection_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_medium"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_ticket_check"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/ticket_check" />
 
     <TextView
         android:id="@+id/type_label"
@@ -76,11 +91,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_small"
+        android:layout_marginEnd="@dimen/card_padding"
         android:drawablePadding="@dimen/live_dot_padding"
         android:textAppearance="?attr/textAppearanceLabelMedium"
         android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintBaseline_toBaselineOf="@id/type_label"
-        app:layout_constraintEnd_toEndOf="@id/event_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/type_label"
         tools:text="Upcoming in 6 days" />
 
@@ -98,7 +114,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_medium"
-        app:layout_constraintEnd_toEndOf="@id/event_name"
+        android:layout_marginEnd="@dimen/card_padding"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/event_name"
         app:layout_constraintTop_toBottomOf="@id/labels_bottom"
         tools:contentDescription="From 19:00 to 23:00, 4 hr">
@@ -187,9 +204,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_small"
+        android:layout_marginEnd="@dimen/card_padding"
         android:maxLines="2"
         app:drawableStartCompat="@drawable/ic_place"
-        app:layout_constraintEnd_toEndOf="@id/event_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/event_name"
         app:layout_constraintTop_toBottomOf="@id/time_row"
         tools:text="Greenwich Campus" />
@@ -200,8 +218,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_extra_small"
+        android:layout_marginEnd="@dimen/card_padding"
         app:drawableStartCompat="@drawable/ic_person"
-        app:layout_constraintEnd_toEndOf="@id/event_name"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/event_name"
         app:layout_constraintTop_toBottomOf="@id/event_location"
         tools:text="Google UK" />

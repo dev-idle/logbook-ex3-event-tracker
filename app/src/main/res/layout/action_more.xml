@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Moved as a whole, press ripple included, so its dots end on the 16dp keyline. -->
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.AppCompat.ActionButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/menu_more"
+    android:src="@drawable/ic_more_vert"
+    android:tooltipText="@string/menu_more"
+    android:translationX="@dimen/more_button_shift" />

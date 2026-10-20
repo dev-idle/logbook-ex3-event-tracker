@@ -55,9 +55,33 @@
     <string name="button_add_event">Add event</string>
     <string name="message_event_added">Event added</string>
     <string name="message_event_updated">Event updated</string>
-    <string name="message_event_deleted">Event deleted</string>
+    <plurals name="message_events_deleted">
+        <item quantity="one">Event deleted</item>
+        <item quantity="other">%d events deleted</item>
+    </plurals>
     <string name="button_undo">Undo</string>
     <string name="description_edit_event">Edit event</string>
+
+    <!-- Selecting tickets to delete several events at once -->
+    <string name="menu_select_events">Select events</string>
+    <string name="title_select_events">Select events</string>
+    <plurals name="selected_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <string name="menu_select_all">Select all</string>
+    <string name="menu_deselect_all">Deselect all</string>
+    <string name="description_close_selection">Close selection</string>
+    <string name="description_select">Select</string>
+    <string name="description_deselect">Deselect</string>
+    <plurals name="delete_events_title">
+        <item quantity="one">Delete this event?</item>
+        <item quantity="other">Delete %d events?</item>
+    </plurals>
+    <plurals name="delete_events_message">
+        <item quantity="one">The selected event will be deleted.</item>
+        <item quantity="other">The selected events will be deleted.</item>
+    </plurals>
 
     <string name="title_add_event">Add event</string>
     <string name="title_edit_event">Edit event</string>

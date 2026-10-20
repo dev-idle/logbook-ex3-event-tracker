@@ -7,30 +7,35 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Same color as the list; the id keeps the collapsed state across rotation. -->
+    <!-- Same color as the list. -->
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/list_background"
         android:fitsSystemWindows="true"
         app:liftOnScroll="false">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            style="@style/Widget.EventTracker.CollapsingToolbar"
+        <!-- Only as tall as its title and buttons, so the buttons line up with the title. -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.EventTracker.Toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/app_bar_height"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            android:layout_height="wrap_content"
+            android:minHeight="0dp"
+            android:paddingTop="@dimen/space_small"
+            app:maxButtonHeight="?attr/minTouchTargetSize"
+            app:title="@string/app_name" />
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"
-                app:layout_collapseMode="pin"
-                app:title="@string/app_name" />
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        <!-- On the screen keyline with the chips and tickets, also while selecting. -->
+        <TextView
+            android:id="@+id/event_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingEnd="@dimen/screen_padding"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="6 events" />
 
         <!-- Stays under the title as the list scrolls. MainActivity adds one chip per status. -->
         <HorizontalScrollView

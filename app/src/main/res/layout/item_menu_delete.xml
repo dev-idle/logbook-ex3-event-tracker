@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Material 3 menu item with a leading icon, in red as it leads to deleting. -->
+<!-- In red, as it leads to deleting. -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.EventTracker.MenuItem"
     android:layout_width="wrap_content"
     android:layout_height="?android:attr/listPreferredItemHeightSmall"
-    android:drawablePadding="@dimen/space_medium"
-    android:ellipsize="end"
-    android:gravity="center_vertical"
-    android:maxLines="1"
-    android:paddingStart="@dimen/space_medium"
-    android:paddingEnd="@dimen/space_medium"
-    android:textAppearance="?attr/textAppearanceBodyLarge"
     android:textColor="?attr/colorError"
     app:drawableStartCompat="@drawable/ic_delete"
     app:drawableTint="?attr/colorError" />
