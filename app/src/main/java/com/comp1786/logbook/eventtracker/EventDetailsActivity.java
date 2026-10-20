@@ -1,8 +1,6 @@
 package com.comp1786.logbook.eventtracker;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -197,14 +195,11 @@ public class EventDetailsActivity extends AppCompatActivity {
         EventType type = event.getType();
         nameText.setText(event.getName());
         typeLabel.setText(type.getLabelRes());
-        statusText.setText(state.statusText(this, event, state.daysAway(event, now.toLocalDate())));
-        statusText.setTextColor(MaterialColors.getColor(statusText, state.getStatusColorAttr()));
-        statusText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                state == TicketState.LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
+        state.showStatus(statusText, event, state.daysAway(event, now.toLocalDate()));
         showTimes();
         locationText.setText(event.getLocation());
         organizerText.setText(event.getOrganizer());
-        showCancelled(type, state == TicketState.CANCELLED);
+        state.showCancelled(nameText, typeLabel, type, startTimeText, endTimeText);
     }
 
     /** Shows when the event starts and ends, with the end date in color if it is the next day. */
@@ -227,22 +222,5 @@ public class EventDetailsActivity extends AppCompatActivity {
         timeBlock.setContentDescription(getString(R.string.description_starts_ends,
                 start, EventDates.formatLong(startDate), end, EventDates.formatLong(endDate),
                 length));
-    }
-
-    /** Grays out a cancelled event and strikes through its name, as its ticket does. */
-    private void showCancelled(EventType type, boolean cancelled) {
-        int textColor = MaterialColors.getColor(nameText, cancelled
-                ? com.google.android.material.R.attr.colorOnSurfaceVariant
-                : com.google.android.material.R.attr.colorOnSurface);
-        nameText.setTextColor(textColor);
-        startTimeText.setTextColor(textColor);
-        endTimeText.setTextColor(textColor);
-        int flags = nameText.getPaintFlags();
-        nameText.setPaintFlags(cancelled
-                ? flags | Paint.STRIKE_THRU_TEXT_FLAG : flags & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        typeLabel.setBackgroundTintList(ColorStateList.valueOf(cancelled
-                ? MaterialColors.getColor(typeLabel,
-                        com.google.android.material.R.attr.colorSurfaceContainerHighest)
-                : getColor(type.getContainerColorRes())));
     }
 }

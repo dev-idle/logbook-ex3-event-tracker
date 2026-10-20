@@ -1,10 +1,15 @@
 package com.comp1786.logbook.eventtracker;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Paint;
+import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.color.MaterialColors;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,11 +63,6 @@ public enum TicketState {
         return stubTextColorAttr;
     }
 
-    @AttrRes
-    public int getStatusColorAttr() {
-        return statusColorAttr;
-    }
-
     /** Returns when the next events start, or null while one is happening or none is ahead. */
     @Nullable
     public static LocalDateTime nextStart(List<Event> events, LocalDateTime now) {
@@ -97,8 +97,36 @@ public enum TicketState {
         return ChronoUnit.DAYS.between(today, countdownDate(event));
     }
 
+    /** Shows the status phrase in its color, with a dot while the event is happening. */
+    public void showStatus(TextView statusView, Event event, long daysAway) {
+        statusView.setText(statusText(statusView.getContext(), event, daysAway));
+        statusView.setTextColor(MaterialColors.getColor(statusView, statusColorAttr));
+        statusView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                this == LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
+    }
+
+    /** Grays out a cancelled event and strikes through its name, or shows it as usual. */
+    public void showCancelled(TextView nameView, TextView typeLabel, EventType type,
+            TextView... timeViews) {
+        boolean cancelled = this == CANCELLED;
+        int textColor = MaterialColors.getColor(nameView, cancelled
+                ? com.google.android.material.R.attr.colorOnSurfaceVariant
+                : com.google.android.material.R.attr.colorOnSurface);
+        nameView.setTextColor(textColor);
+        for (TextView timeView : timeViews) {
+            timeView.setTextColor(textColor);
+        }
+        int flags = nameView.getPaintFlags();
+        nameView.setPaintFlags(cancelled
+                ? flags | Paint.STRIKE_THRU_TEXT_FLAG : flags & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        typeLabel.setBackgroundTintList(ColorStateList.valueOf(cancelled
+                ? MaterialColors.getColor(typeLabel,
+                        com.google.android.material.R.attr.colorSurfaceContainerHighest)
+                : typeLabel.getContext().getColor(type.getContainerColorRes())));
+    }
+
     /** Describes the status with when the event is, such as "Upcoming in 6 days". */
-    public String statusText(Context context, Event event, long daysAway) {
+    private String statusText(Context context, Event event, long daysAway) {
         if (this == LIVE) {
             return context.getString(R.string.status_live);
         } else if (this == CANCELLED) {

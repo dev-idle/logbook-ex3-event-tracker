@@ -2,7 +2,6 @@ package com.comp1786.logbook.eventtracker;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Paint;
 import android.graphics.drawable.RippleDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -225,10 +224,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.monthText.setTextColor(stubTextColor);
         holder.dayText.setTextColor(stubTextColor);
         holder.dayOfWeekText.setTextColor(stubTextColor);
-        holder.statusText.setTextColor(
-                MaterialColors.getColor(holder.itemView, state.getStatusColorAttr()));
-        holder.statusText.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                state == TicketState.LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
 
         holder.dateStub.setContentDescription(EventDates.formatLong(date));
         holder.monthText.setText(EventDates.formatShortMonth(date));
@@ -236,11 +231,12 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.dayOfWeekText.setText(EventDates.formatShortDayOfWeek(date));
         holder.nameText.setText(event.getName());
         holder.typeLabel.setText(type.getLabelRes());
-        holder.statusText.setText(state.statusText(context, event, row.daysAway));
+        state.showStatus(holder.statusText, event, row.daysAway);
         bindTimes(holder, event);
         holder.locationText.setText(event.getLocation());
         holder.organizerText.setText(event.getOrganizer());
-        bindCancelled(holder, type, state == TicketState.CANCELLED);
+        state.showCancelled(holder.nameText, holder.typeLabel, type,
+                holder.startTimeText, holder.endTimeText);
     }
 
     /** Shows the circle while selecting, checked and outlined when the ticket is selected. */
@@ -255,24 +251,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ViewCompat.replaceAccessibilityAction(holder.itemView,
                 AccessibilityActionCompat.ACTION_CLICK,
                 holder.itemView.getContext().getString(actionRes), null);
-    }
-
-    /** Grays out a cancelled ticket and strikes through its name, or shows it as usual. */
-    private static void bindCancelled(EventViewHolder holder, EventType type, boolean cancelled) {
-        Context context = holder.itemView.getContext();
-        int textColor = MaterialColors.getColor(holder.itemView, cancelled
-                ? com.google.android.material.R.attr.colorOnSurfaceVariant
-                : com.google.android.material.R.attr.colorOnSurface);
-        holder.nameText.setTextColor(textColor);
-        holder.startTimeText.setTextColor(textColor);
-        holder.endTimeText.setTextColor(textColor);
-        int flags = holder.nameText.getPaintFlags();
-        holder.nameText.setPaintFlags(cancelled
-                ? flags | Paint.STRIKE_THRU_TEXT_FLAG : flags & ~Paint.STRIKE_THRU_TEXT_FLAG);
-        holder.typeLabel.setBackgroundTintList(ColorStateList.valueOf(cancelled
-                ? MaterialColors.getColor(holder.itemView,
-                        com.google.android.material.R.attr.colorSurfaceContainerHighest)
-                : context.getColor(type.getContainerColorRes())));
     }
 
     /** Shows the start, end and length like a boarding pass, read out as one sentence. */
