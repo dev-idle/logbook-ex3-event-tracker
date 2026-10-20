@@ -343,6 +343,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
                 getResources().getQuantityString(R.plurals.message_events_deleted, count, count),
                 R.drawable.ic_delete, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.button_undo, v -> {
+            // A second tap before the bar closes would save the events twice.
+            v.setEnabled(false);
             database.restoreEvents(events);
             showEvents();
             scrollToEvent(events.get(0).getId());
