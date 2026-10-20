@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddEventActivity"
+            android:name=".AddEditEventActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity

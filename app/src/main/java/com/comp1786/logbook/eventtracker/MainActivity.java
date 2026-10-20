@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     }
 
     private void openAddEvent() {
-        addEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class));
+        addEventLauncher.launch(new Intent(MainActivity.this, AddEditEventActivity.class));
     }
 
     private void openEventDetails(Event event) {
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         if (result.getResultCode() != RESULT_OK || data == null) {
             return;
         }
-        scrollToEvent(data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
+        scrollToEvent(data.getLongExtra(AddEditEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
         IconSnackbar.make(eventList, getString(R.string.message_event_added),
                 R.drawable.ic_check_circle, Snackbar.LENGTH_SHORT).show();
     }

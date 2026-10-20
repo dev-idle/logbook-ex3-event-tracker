@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddEventActivity">
+    tools:context=".AddEditEventActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -70,7 +70,7 @@
                     android:maxLength="10" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- One time range; AddEventActivity fills the lists and restores the times. -->
+            <!-- One time range; AddEditEventActivity fills the lists and restores the times. -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                     android:maxLength="100" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- AddEventActivity sets the items from EventType and restores the chosen type. -->
+            <!-- AddEditEventActivity fills it from EventType and restores the chosen type. -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/type_layout"
                 style="@style/Widget.EventTracker.DropdownField"
@@ -168,7 +168,7 @@
                     android:saveEnabled="false" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- AddEventActivity sets the items from EventStatus and starts at Upcoming. -->
+            <!-- AddEditEventActivity fills it from EventStatus and starts at Upcoming. -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/status_layout"
                 style="@style/Widget.EventTracker.DropdownField"

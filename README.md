@@ -126,7 +126,7 @@ from the command line:
 | --------------------------- | ----------------------------------------------- |
 | `MainActivity.java`         | Event list, filter, selection and messages      |
 | `EventDetailsActivity.java` | One event in full, with Edit and Delete         |
-| `AddEventActivity.java`     | Add and edit form, time lists and errors        |
+| `AddEditEventActivity.java` | Add and edit form, time lists and errors        |
 | `EventDatabase.java`        | SQLite table, queries and the status update     |
 | `EventAdapter.java`         | Month headings, cards and selection             |
 | `EventCardState.java`       | Card states, colors and status phrases          |

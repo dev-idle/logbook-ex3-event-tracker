@@ -166,8 +166,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void openEditEvent() {
-        editEventLauncher.launch(new Intent(EventDetailsActivity.this, AddEventActivity.class)
-                .putExtra(AddEventActivity.EXTRA_EVENT, event));
+        editEventLauncher.launch(new Intent(EventDetailsActivity.this, AddEditEventActivity.class)
+                .putExtra(AddEditEventActivity.EXTRA_EVENT, event));
     }
 
     /** Asks before deleting the event, which then returns RESULT_DELETED. */

@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * The form for adding or editing an event, which it saves before returning its ID.
  */
-public class AddEventActivity extends AppCompatActivity {
+public class AddEditEventActivity extends AppCompatActivity {
 
     /** Extra with the event to edit. */
     public static final String EXTRA_EVENT = "event";
@@ -92,7 +92,7 @@ public class AddEventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_add_event);
+        setContentView(R.layout.activity_add_edit_event);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
                     | WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.ime());
