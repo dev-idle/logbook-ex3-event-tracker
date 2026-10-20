@@ -107,10 +107,12 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return !selectedIds.isEmpty();
     }
 
-    /** Selects the events with these IDs, such as the ones selected before a rotation. */
+    /** Selects the shown events with these IDs, such as the ones selected before a rotation. */
     public void select(long[] ids) {
         for (long id : ids) {
-            selectedIds.add(id);
+            if (positionOf(id) != RecyclerView.NO_POSITION) {
+                selectedIds.add(id);
+            }
         }
         notifyItemRangeChanged(0, rows.size(), SELECTION_CHANGED);
     }
