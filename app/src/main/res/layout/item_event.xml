@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Background: TicketDrawable. Less top padding offsets the font's space above the name. -->
+<!-- Drawn by TicketDrawable, with less top padding to offset the font's space above the name. -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -63,7 +63,7 @@
         app:layout_goneMarginEnd="@dimen/card_padding"
         tools:text="Android Dev Summit" />
 
-    <!-- Shown while selecting. Screen readers hear "Selected" from the ticket itself. -->
+    <!-- Shown while selecting, and silent, as screen readers hear "Selected" from the ticket. -->
     <ImageView
         android:id="@+id/selection_check"
         android:layout_width="wrap_content"

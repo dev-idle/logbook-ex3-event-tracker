@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment;
 import java.time.LocalDate;
 
 /**
- * Hosts the module guide's DatePickerDialog and returns the chosen date as a fragment result.
+ * The module brief's DatePickerFragment, adapted to return the date as a fragment result.
  */
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {

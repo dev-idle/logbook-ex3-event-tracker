@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- * An event entry. Serializable so it can be passed between activities in an Intent.
+ * An event entry, Serializable so activities can pass it in an Intent.
  */
 public final class Event implements Serializable {
 
@@ -63,6 +63,7 @@ public final class Event implements Serializable {
         return date.atTime(startTime);
     }
 
+    /** Returns when the event ends, on the next day if it runs past midnight. */
     public LocalDateTime getEnd() {
         return EventTimes.endOn(date, startTime, endTime);
     }

@@ -66,7 +66,7 @@ public class EventDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
-            // Version 2 adds the status. Events saved before it count as upcoming.
+            // Version 2 adds the status, and events saved before it count as upcoming.
             db.execSQL("ALTER TABLE Event ADD COLUMN Status TEXT NOT NULL DEFAULT 'UPCOMING'");
         }
     }

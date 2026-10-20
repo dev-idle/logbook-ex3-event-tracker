@@ -8,7 +8,7 @@ import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 /**
- * Reads and writes event dates in the DD/MM/YYYY format used by the brief.
+ * Reads and writes event dates in the DD/MM/YYYY format of the module brief.
  */
 public final class EventDates {
 

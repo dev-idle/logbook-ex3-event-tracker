@@ -16,8 +16,8 @@ status.
 - A status for each event: Upcoming, Completed or Cancelled, chosen from a
   dropdown.
 - Upcoming events become Completed once they end.
-- Filter chips [1] that show only the events with one status. The app always
-  opens on every saved event.
+- Filter chips [1] that show only the events with one status. The filter is
+  not saved, so a new launch shows every saved event.
 - Snackbars [2] that confirm when an event is added, updated or deleted.
 - From Exercise 2: tickets in start order under month headings, the date
   picker and time lists, light and dark themes from seed #2E6FD8 [3], two
@@ -74,7 +74,7 @@ The `Event` table in `events.db`:
 | `Status`    | TEXT NOT NULL                     | UPCOMING     |
 
 - Dates are stored as YYYY-MM-DD and times as HH:MM, so text order is time
-  order and `ORDER BY Date, StartTime` lists events in start order.
+  order and `ORDER BY Date, StartTime, ID` lists events in start order.
 - Version 2 added the Status column. Upgrading from version 1 keeps every saved
   event. Those events start as Upcoming, and the ones that have ended become
   Completed when the list loads.
@@ -82,22 +82,27 @@ The `Event` table in `events.db`:
   break or change a query.
 - Deleting several events, and undoing it, runs in one transaction, so either
   every event changes or none does.
-- Database calls run on the main thread, as in the module brief, because the
-  table stays small. A larger app would run them on a background thread.
+- Database calls run on the main thread, as in the brief's SQLite example,
+  because the table stays small. A larger app would run them on a background
+  thread.
 
-## Module guide
+## Module brief
 
-The app follows the module's Android Studio brief. Exercise 2 already used its
-explicit intents with a Serializable event, an ActivityResultLauncher and a
-DatePickerDialog in a DialogFragment [6]. RecyclerView [7] replaces ListView,
-and Material exposed dropdown menus [8] replace Spinners.
+The app follows the module's Android Studio brief. Exercise 2 already used
+its explicit intents with a Serializable event, an ActivityResultLauncher and a
+DatePickerDialog in a DialogFragment [6]. `DatePickerFragment` is adapted from
+the brief: it takes the date as a fragment argument, so Android can recreate
+it, and returns the chosen date as a fragment result. RecyclerView [7] replaces
+ListView, Material exposed dropdown menus [8] replace Spinners, and snackbars
+replace Toasts so a delete can offer Undo.
 
-The database follows the brief's SQLite section: a SQLiteOpenHelper subclass,
-SQLiteStatement bindings for inserts and updates, and rawQuery for reads [9].
-It differs from the brief in three places:
+The database follows the brief's SQLite section: a SQLiteOpenHelper subclass
+[9], SQLiteStatement bindings for inserts and updates, and rawQuery for reads,
+with `DatabaseUtils.queryNumEntries` for the event count. It differs from the
+brief in three places:
 
-- UPDATE and DELETE use `executeUpdateDelete`, where the brief's update calls
-  `executeInsert` [10].
+- UPDATE and DELETE use `executeUpdateDelete` [10], where the brief's update
+  calls `executeInsert`.
 - Values are always bound, instead of going through the brief's `Execute`
   method, which runs any SQL string with `execSQL`.
 - Cursors and statements are closed with try-with-resources.
@@ -137,6 +142,8 @@ from the command line:
 | `IconSnackbar.java`         | Messages with an icon before their text         |
 | `DatePickerFragment.java`   | Date picker dialog hosted in a DialogFragment   |
 
+Icons such as Add, Edit and Delete are from Material Symbols and Icons [11].
+
 ## Sources
 
 1. Material Design 3. Chips. https://m3.material.io/components/chips/overview
@@ -158,3 +165,4 @@ from the command line:
    https://developer.android.com/training/data-storage/sqlite
 10. Android Developers. SQLiteStatement.
     https://developer.android.com/reference/android/database/sqlite/SQLiteStatement
+11. Google. Material Symbols and Icons. https://fonts.google.com/icons

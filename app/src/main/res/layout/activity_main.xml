@@ -37,7 +37,7 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             tools:text="6 events" />
 
-        <!-- Stays under the title as the list scrolls. MainActivity adds one chip per status. -->
+        <!-- Holds a chip per status, added in MainActivity, and stays put as the list scrolls. -->
         <HorizontalScrollView
             android:id="@+id/filter_bar"
             android:layout_width="match_parent"

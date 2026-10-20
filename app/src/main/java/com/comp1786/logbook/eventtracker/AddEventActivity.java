@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The form for adding or editing an event. It saves the event and returns its ID.
+ * The form for adding or editing an event, which it saves before returning its ID.
  */
 public class AddEventActivity extends AppCompatActivity {
 
@@ -46,7 +46,7 @@ public class AddEventActivity extends AppCompatActivity {
     private static final String STATE_END_TIME = "end_time";
     private static final String STATE_ORIGINAL_TEXTS = "original_texts";
 
-    // Where both time lists open while no start time is selected.
+    // The start list opens here, and the end list an hour later, until a start is chosen.
     private static final LocalTime DEFAULT_START_TIME = LocalTime.of(6, 0);
     private static final Duration DEFAULT_LENGTH = Duration.ofHours(1);
     private static final EventStatus DEFAULT_STATUS = EventStatus.UPCOMING;
@@ -278,7 +278,7 @@ public class AddEventActivity extends AppCompatActivity {
         statusInput.setText(getString(selectedStatus.getLabelRes()), false);
     }
 
-    /** Opens the picker on the date typed so far, or on today if there is none. */
+    /** Opens the picker on the date typed so far, or on today if it is not a valid date. */
     private void showDatePicker() {
         EventValidator.Result<LocalDate> typed = EventValidator.validateDate(textOf(dateInput));
         LocalDate date = typed.isValid() ? typed.getValue() : LocalDate.now();

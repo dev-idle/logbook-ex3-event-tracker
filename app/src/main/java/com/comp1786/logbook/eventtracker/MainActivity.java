@@ -35,6 +35,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Lists the saved events as tickets, with a status filter and a way to delete several at once.
+ */
 public class MainActivity extends AppCompatActivity implements EventAdapter.OnEventClickListener {
 
     private static final String STATE_FILTER = "filter";
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         });
         eventList.setLayoutManager(layoutManager);
         eventList.setAdapter(adapter);
-        // Kept only across rotation, so the app always opens on every saved event.
+        // Kept across rotation but not saved, so a new launch shows every saved event.
         String savedFilter = savedInstanceState == null
                 ? null : savedInstanceState.getString(STATE_FILTER);
         filter = savedFilter == null ? null : EventStatus.valueOf(savedFilter);
@@ -276,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         addButton = findViewById(R.id.add_button);
     }
 
-    /** Adds a chip for each status, with the current filter chosen. No chosen chip shows all. */
+    /** Adds a chip per status with the current filter chosen; none chosen shows every event. */
     private void buildFilterChips() {
         for (EventStatus status : EventStatus.values()) {
             addFilterChip(status);
@@ -414,7 +417,6 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
 
     /** Shows the events the filter keeps and their number, or the empty state if there are none. */
     private void showEvents() {
-        // Upcoming events that have ended become completed before they are shown.
         LocalDateTime now = LocalDateTime.now();
         database.completeEndedEvents(now);
         boolean nothingSaved = database.countEvents() == 0;

@@ -64,7 +64,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return selecting;
     }
 
-    /** Shows or hides the circles for selecting tickets. Stopping deselects every ticket. */
+    /** Shows or hides the circles for selecting tickets, and deselects all when hiding them. */
     public void setSelecting(boolean selecting) {
         this.selecting = selecting;
         if (!selecting) {
