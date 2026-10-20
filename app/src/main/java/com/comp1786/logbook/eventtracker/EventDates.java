@@ -1,5 +1,7 @@
 package com.comp1786.logbook.eventtracker;
 
+import androidx.annotation.Nullable;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,7 @@ public final class EventDates {
     }
 
     /** Returns the date for text such as "5/3/2026", or null if it is not a real date. */
+    @Nullable
     public static LocalDate parse(String text) {
         try {
             return LocalDate.parse(text, INPUT);

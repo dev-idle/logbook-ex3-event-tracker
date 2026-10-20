@@ -361,18 +361,18 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     /** The view of one month heading. */
-    public static final class MonthViewHolder extends RecyclerView.ViewHolder {
+    private static final class MonthViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView monthText;
 
-        public MonthViewHolder(@NonNull View itemView) {
+        MonthViewHolder(@NonNull View itemView) {
             super(itemView);
             monthText = itemView.findViewById(R.id.month_heading);
         }
     }
 
     /** The views of one event card. */
-    public static final class EventViewHolder extends RecyclerView.ViewHolder {
+    private static final class EventViewHolder extends RecyclerView.ViewHolder {
 
         private final EventCardDrawable card;
         private final View datePanel;
@@ -391,7 +391,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private final TextView organizerText;
         private final View selectionCheck;
 
-        public EventViewHolder(@NonNull View itemView) {
+        EventViewHolder(@NonNull View itemView) {
             super(itemView);
             card = new EventCardDrawable(itemView.getContext());
             int rippleColor = MaterialColors.getColor(
@@ -399,10 +399,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             // Without a mask, the ripple is clipped to the card shape.
             itemView.setBackground(
                     new RippleDrawable(ColorStateList.valueOf(rippleColor), card, null));
-            // Screen readers say "Double tap and hold to select".
-            ViewCompat.replaceAccessibilityAction(itemView,
-                    AccessibilityActionCompat.ACTION_LONG_CLICK,
-                    itemView.getContext().getString(R.string.description_select), null);
             datePanel = itemView.findViewById(R.id.date_panel);
             monthText = itemView.findViewById(R.id.event_month);
             dayText = itemView.findViewById(R.id.event_day);

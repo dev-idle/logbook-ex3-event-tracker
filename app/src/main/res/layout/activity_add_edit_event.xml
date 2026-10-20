@@ -41,7 +41,7 @@
                     android:imeOptions="actionNext|flagNoExtractUi"
                     android:importantForAutofill="no"
                     android:inputType="textCapSentences"
-                    android:maxLength="100" />
+                    android:maxLength="@integer/text_max_length" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- No error icon here, so the calendar button stays visible while an error shows. -->
@@ -56,7 +56,7 @@
                 app:endIconDrawable="@drawable/ic_event"
                 app:endIconMode="custom"
                 app:errorIconDrawable="@null"
-                app:helperText="@string/hint_date_format">
+                app:helperText="@string/helper_date_format">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/date_input"
@@ -128,7 +128,7 @@
                     android:imeOptions="actionNext|flagNoExtractUi"
                     android:importantForAutofill="no"
                     android:inputType="textCapWords"
-                    android:maxLength="100" />
+                    android:maxLength="@integer/text_max_length" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -146,7 +146,7 @@
                     android:imeOptions="actionDone|flagNoExtractUi"
                     android:importantForAutofill="no"
                     android:inputType="textCapWords"
-                    android:maxLength="100" />
+                    android:maxLength="@integer/text_max_length" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- AddEditEventActivity fills it from EventType and restores the chosen type. -->

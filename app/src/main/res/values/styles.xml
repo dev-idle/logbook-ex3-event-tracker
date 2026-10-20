@@ -166,9 +166,9 @@
         <item name="android:layout_marginEnd">@dimen/space_small</item>
     </style>
 
-    <style name="Widget.EventTracker.EventDetail" parent="">
+    <style name="Widget.EventTracker.CardDetail" parent="">
         <item name="android:drawablePadding">@dimen/space_small</item>
-        <item name="android:drawableTint">?attr/colorOnSurfaceVariant</item>
+        <item name="drawableTint">?attr/colorOnSurfaceVariant</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:maxLines">1</item>
@@ -193,7 +193,7 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="Widget.EventTracker.DetailDate" parent="">
+    <style name="Widget.EventTracker.DetailSupporting" parent="">
         <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
         <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>

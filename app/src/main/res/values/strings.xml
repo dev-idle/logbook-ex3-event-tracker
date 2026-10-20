@@ -101,7 +101,7 @@
     <string name="label_organizer">Event organizer</string>
     <string name="label_type">Event type</string>
     <string name="label_status">Event status</string>
-    <string name="hint_date_format" translatable="false">DD/MM/YYYY</string>
+    <string name="helper_date_format" translatable="false">DD/MM/YYYY</string>
     <string name="description_choose_date">Choose a date</string>
     <string name="description_navigate_up">Navigate up</string>
     <string name="button_save_event">Save event</string>

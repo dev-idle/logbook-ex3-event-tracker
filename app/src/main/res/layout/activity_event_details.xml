@@ -125,7 +125,7 @@
 
                         <TextView
                             android:id="@+id/event_month"
-                            style="@style/Widget.EventTracker.DetailDate"
+                            style="@style/Widget.EventTracker.DetailSupporting"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:importantForAccessibility="no"
@@ -150,7 +150,7 @@
                     style="@style/Widget.EventTracker.DetailLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/card_padding"
+                    android:layout_marginStart="@dimen/detail_icon_margin"
                     android:layout_marginTop="@dimen/screen_padding"
                     android:importantForAccessibility="no"
                     android:text="@string/label_start_time"
@@ -169,7 +169,7 @@
 
                 <TextView
                     android:id="@+id/event_length"
-                    style="@style/Widget.EventTracker.DetailDate"
+                    style="@style/Widget.EventTracker.DetailSupporting"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_small"
@@ -217,7 +217,7 @@
 
                 <TextView
                     android:id="@+id/end_date"
-                    style="@style/Widget.EventTracker.DetailDate"
+                    style="@style/Widget.EventTracker.DetailSupporting"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:importantForAccessibility="no"
@@ -275,7 +275,7 @@
                     android:layout_width="@dimen/detail_icon_size"
                     android:layout_height="@dimen/detail_icon_size"
                     android:layout_marginTop="@dimen/space_small"
-                    android:layout_marginEnd="@dimen/card_padding"
+                    android:layout_marginEnd="@dimen/detail_icon_margin"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_place"
                     app:tint="?attr/colorOnSurfaceVariant" />
@@ -315,7 +315,7 @@
                     android:layout_width="@dimen/detail_icon_size"
                     android:layout_height="@dimen/detail_icon_size"
                     android:layout_marginTop="@dimen/space_small"
-                    android:layout_marginEnd="@dimen/card_padding"
+                    android:layout_marginEnd="@dimen/detail_icon_margin"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_person"
                     app:tint="?attr/colorOnSurfaceVariant" />

@@ -16,7 +16,9 @@ import java.time.LocalDate;
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
 
+    /** Fragment result key for the chosen date. */
     public static final String REQUEST_KEY = "date_picker";
+    /** Result extra holding the chosen LocalDate. */
     public static final String RESULT_DATE = "date";
 
     private static final String ARG_DATE = "date";

@@ -2,6 +2,8 @@ package com.comp1786.logbook.eventtracker;
 
 import android.content.res.Resources;
 
+import androidx.annotation.Nullable;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +18,8 @@ import java.util.List;
  */
 public final class EventTimes {
 
-    private static final int MINUTES_PER_DAY = 24 * 60;
+    private static final int MINUTES_PER_HOUR = 60;
+    private static final int MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
     // Times are offered every 15 minutes, so a day has 96 of them.
     private static final int SLOT_MINUTES = 15;
     private static final int SLOTS_PER_DAY = MINUTES_PER_DAY / SLOT_MINUTES;
@@ -27,6 +30,7 @@ public final class EventTimes {
     }
 
     /** Returns the time for text such as "09:30", or null if the text is not a time. */
+    @Nullable
     public static LocalTime parse(String text) {
         try {
             return LocalTime.parse(text, FORMAT);
@@ -70,8 +74,8 @@ public final class EventTimes {
     /** Formats the length of an event, such as "45 min", "4 hr" or "1 hr 30 min". */
     public static String formatLength(Resources res, LocalTime start, LocalTime end) {
         long minutes = minutesBetween(start, end);
-        long hours = minutes / 60;
-        long rest = minutes % 60;
+        long hours = minutes / MINUTES_PER_HOUR;
+        long rest = minutes % MINUTES_PER_HOUR;
         if (hours == 0) {
             return res.getString(R.string.event_length_minutes, rest);
         } else if (rest == 0) {
