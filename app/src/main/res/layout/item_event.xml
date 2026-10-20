@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Background: TicketDrawable. Less top padding offsets the font's space above the name. -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/card_margin"
+    android:paddingTop="@dimen/space_medium"
+    android:paddingBottom="@dimen/card_padding"
+    android:screenReaderFocusable="true">
+
+    <!-- Screen readers hear the full date, such as "Saturday 24 October 2026". -->
+    <LinearLayout
+        android:id="@+id/date_stub"
+        android:layout_width="@dimen/ticket_stub_width"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/event_month"
+            style="@style/Widget.EventTracker.TicketStub.Month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            tools:text="Oct" />
+
+        <TextView
+            android:id="@+id/event_day"
+            style="@style/Widget.EventTracker.TicketStub.Day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            tools:text="24" />
+
+        <TextView
+            android:id="@+id/event_day_of_week"
+            style="@style/Widget.EventTracker.TicketStub.DayOfWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            tools:text="Sat" />
+    </LinearLayout>
+
+    <!-- Only the name makes room for the check, so the rows below keep their width. -->
+    <TextView
+        android:id="@+id/event_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_padding"
+        android:layout_marginEnd="@dimen/space_small"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintEnd_toStartOf="@id/selection_check"
+        app:layout_constraintStart_toEndOf="@id/date_stub"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginEnd="@dimen/card_padding"
+        tools:text="Android Dev Summit" />
+
+    <!-- Shown while selecting. Screen readers hear "Selected" from the ticket itself. -->
+    <ImageView
+        android:id="@+id/selection_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/space_medium"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_ticket_check"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/ticket_check" />
+
+    <TextView
+        android:id="@+id/type_label"
+        style="@style/Widget.EventTracker.TypeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_small"
+        app:layout_constraintStart_toStartOf="@id/event_name"
+        app:layout_constraintTop_toBottomOf="@id/event_name"
+        tools:text="@string/type_conference" />
+
+    <TextView
+        android:id="@+id/event_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_small"
+        android:layout_marginEnd="@dimen/card_padding"
+        android:drawablePadding="@dimen/live_dot_padding"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintBaseline_toBaselineOf="@id/type_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/type_label"
+        tools:text="Upcoming in 6 days" />
+
+    <!-- Below the taller label, so a status that wraps at large text sizes never overlaps. -->
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/labels_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="type_label,event_status" />
+
+    <!-- Start and end at either side with the length between, which shortens first. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/time_row"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_medium"
+        android:layout_marginEnd="@dimen/card_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/event_name"
+        app:layout_constraintTop_toBottomOf="@id/labels_bottom"
+        tools:contentDescription="From 19:00 to 23:00, 4 hr">
+
+        <TextView
+            android:id="@+id/start_time"
+            style="@style/Widget.EventTracker.TicketTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="19:00" />
+
+        <View
+            android:id="@+id/start_line"
+            style="@style/Widget.EventTracker.TicketTimeLine"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/ticket_time_line_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/event_length"
+            app:layout_constraintStart_toEndOf="@id/start_time"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/event_length"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_small"
+            android:layout_marginEnd="@dimen/space_small"
+            android:ellipsize="end"
+            android:importantForAccessibility="no"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/end_time"
+            app:layout_constraintStart_toEndOf="@id/start_time"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="4 hr" />
+
+        <View
+            android:id="@+id/end_line"
+            style="@style/Widget.EventTracker.TicketTimeLine"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/ticket_time_line_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/end_time"
+            app:layout_constraintStart_toEndOf="@id/event_length"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/end_time"
+            style="@style/Widget.EventTracker.TicketTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/space_tiny"
+            android:importantForAccessibility="no"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/next_day"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="0dp"
+            tools:text="23:00" />
+
+        <!-- Raised beside the end time, like the +1 on a flight that lands the next day. -->
+        <TextView
+            android:id="@+id/next_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:text="@string/next_day_marker"
+            android:textAppearance="?attr/textAppearanceLabelSmall"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/end_time"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Two lines fit a full address. -->
+    <TextView
+        android:id="@+id/event_location"
+        style="@style/Widget.EventTracker.EventDetail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_small"
+        android:layout_marginEnd="@dimen/card_padding"
+        android:maxLines="2"
+        app:drawableStartCompat="@drawable/ic_place"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/event_name"
+        app:layout_constraintTop_toBottomOf="@id/time_row"
+        tools:text="Greenwich Campus" />
+
+    <TextView
+        android:id="@+id/event_organizer"
+        style="@style/Widget.EventTracker.EventDetail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_extra_small"
+        android:layout_marginEnd="@dimen/card_padding"
+        app:drawableStartCompat="@drawable/ic_person"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/event_name"
+        app:layout_constraintTop_toBottomOf="@id/event_location"
+        tools:text="Google UK" />
+</androidx.constraintlayout.widget.ConstraintLayout>

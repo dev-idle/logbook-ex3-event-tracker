@@ -1,3 +1,147 @@
 <resources>
     <string name="app_name">Event Tracker</string>
+
+    <string name="empty_title">No events yet</string>
+    <string name="empty_message">Events you add appear here.</string>
+    <plurals name="event_count">
+        <item quantity="one">%d event</item>
+        <item quantity="other">%d events</item>
+    </plurals>
+    <!-- Shown while the list is filtered by status -->
+    <plurals name="event_count_upcoming">
+        <item quantity="one">%d upcoming event</item>
+        <item quantity="other">%d upcoming events</item>
+    </plurals>
+    <plurals name="event_count_completed">
+        <item quantity="one">%d completed event</item>
+        <item quantity="other">%d completed events</item>
+    </plurals>
+    <plurals name="event_count_cancelled">
+        <item quantity="one">%d cancelled event</item>
+        <item quantity="other">%d cancelled events</item>
+    </plurals>
+    <string name="empty_upcoming">No upcoming events</string>
+    <string name="empty_completed">No completed events</string>
+    <string name="empty_cancelled">No cancelled events</string>
+    <string name="empty_filtered_message">Tap the filter again to see every event.</string>
+    <!-- A ticket's status with when the event is, such as "Upcoming in 4 days" -->
+    <string name="status_live">Happening now</string>
+    <string name="status_upcoming_today">Upcoming today</string>
+    <string name="status_upcoming_tomorrow">Upcoming tomorrow</string>
+    <string name="status_upcoming_in">Upcoming in %1$s</string>
+    <string name="status_completed_today">Completed today</string>
+    <string name="status_completed_yesterday">Completed yesterday</string>
+    <string name="status_completed_ago">Completed %1$s ago</string>
+    <plurals name="duration_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="duration_months">
+        <item quantity="one">%d month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+    <plurals name="duration_years">
+        <item quantity="one">%d year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
+    <!-- How long an event lasts, such as "1 hr 30 min" -->
+    <string name="event_length_hours">%1$d hr</string>
+    <string name="event_length_minutes">%1$d min</string>
+    <string name="event_length_hours_minutes">%1$d hr %2$d min</string>
+    <!-- Marks an end time on the next day, as flight tickets do -->
+    <string name="next_day_marker" translatable="false">+1</string>
+    <string name="description_time_range">From %1$s to %2$s, %3$s</string>
+    <string name="description_time_range_next_day">From %1$s to %2$s the next day, %3$s</string>
+    <string name="button_add_event">Add event</string>
+    <string name="message_event_added">Event added</string>
+    <string name="message_event_updated">Event updated</string>
+    <plurals name="message_events_deleted">
+        <item quantity="one">Event deleted</item>
+        <item quantity="other">%d events deleted</item>
+    </plurals>
+    <string name="button_undo">Undo</string>
+    <string name="description_edit_event">Edit event</string>
+
+    <!-- Selecting tickets to delete several events at once -->
+    <string name="menu_select_events">Select events</string>
+    <string name="title_select_events">Select events</string>
+    <plurals name="selected_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <string name="menu_select_all">Select all</string>
+    <string name="menu_deselect_all">Deselect all</string>
+    <string name="description_close_selection">Close selection</string>
+    <string name="description_select">Select</string>
+    <string name="description_deselect">Deselect</string>
+    <plurals name="delete_events_title">
+        <item quantity="one">Delete this event?</item>
+        <item quantity="other">Delete %d events?</item>
+    </plurals>
+    <plurals name="delete_events_message">
+        <item quantity="one">The selected event will be deleted.</item>
+        <item quantity="other">The selected events will be deleted.</item>
+    </plurals>
+
+    <string name="title_add_event">Add event</string>
+    <string name="title_edit_event">Edit event</string>
+    <string name="menu_more">More options</string>
+    <string name="menu_delete">Delete event</string>
+    <string name="label_name">Event name</string>
+    <string name="label_date">Event date</string>
+    <string name="label_start_time">Start time</string>
+    <string name="label_end_time">End time</string>
+    <string name="end_time_next_day">Next day (%1$s)</string>
+    <string name="label_location">Event location</string>
+    <string name="label_organizer">Event organizer</string>
+    <string name="label_type">Event type</string>
+    <string name="label_status">Event status</string>
+    <string name="hint_date_format" translatable="false">DD/MM/YYYY</string>
+    <string name="description_choose_date">Choose a date</string>
+    <string name="description_navigate_up">Navigate up</string>
+    <string name="button_save_event">Save event</string>
+    <string name="button_save_changes">Save changes</string>
+
+    <string name="discard_title">Discard this event?</string>
+    <string name="discard_message">The details you entered will be lost.</string>
+    <string name="discard_changes_title">Discard changes?</string>
+    <string name="discard_changes_message">The changes you made will be lost.</string>
+    <string name="button_discard">Discard</string>
+    <string name="button_keep_editing">Keep editing</string>
+
+    <string name="delete_title">Delete this event?</string>
+    <string name="delete_message">“%1$s” on %2$s will be deleted.</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- Wording follows the GOV.UK Design System error message guidance -->
+    <string name="error_name_required">Enter the event name</string>
+    <string name="error_name_duplicate">An event with this name already exists on this date</string>
+    <string name="error_date_required">Enter the event date</string>
+    <string name="error_date_format">Event date must be in the format DD/MM/YYYY</string>
+    <string name="error_date_not_real">Event date must be a real date</string>
+    <string name="error_date_out_of_range">Event date must be between %1$s and %2$s</string>
+    <string name="error_start_time_required">Enter the start time</string>
+    <string name="error_end_time_required">Enter the end time</string>
+    <string name="error_end_time_same">End time must be different from the start time</string>
+    <string name="error_location_required">Enter the event location</string>
+    <string name="error_organizer_required">Enter the event organizer</string>
+    <string name="error_type_required">Select the event type</string>
+    <string name="error_status_not_ended">Select Upcoming or Cancelled, as the event has not ended</string>
+    <string name="error_status_ended">Select Completed or Cancelled, as the event has ended</string>
+
+    <!-- Event types from the logbook brief -->
+    <string name="type_conference">Conference</string>
+    <string name="type_workshop">Workshop</string>
+    <string name="type_seminar">Seminar</string>
+    <string name="type_social">Social</string>
+    <string name="type_other">Other</string>
+
+    <!-- Event statuses from the logbook brief -->
+    <string name="status_upcoming">Upcoming</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_cancelled">Cancelled</string>
+
+    <!-- Characters accepted while typing a date -->
+    <string name="digits_date" translatable="false">0123456789/</string>
 </resources>

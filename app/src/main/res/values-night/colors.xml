@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tickets on a slightly darker list, so their notches show -->
+    <color name="list_background">@color/md_theme_dark_surface</color>
+    <color name="ticket_body">@color/md_theme_dark_surfaceContainerHigh</color>
+
+    <!-- Event type labels, 7:1 or more against the label text -->
+    <color name="type_conference_container">#1F4565</color>
+    <color name="type_workshop_container">#224A2A</color>
+    <color name="type_seminar_container">#4C3A65</color>
+    <color name="type_social_container">#623812</color>
+    <color name="type_other_container">#414245</color>
+</resources>

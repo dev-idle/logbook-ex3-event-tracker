@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A gap and cut-out lines replace the colors in themed icons -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M32,35H40A4,4 0,0 0,43 38.87V69.13A4,4 0,0 0,40 73H32A6,6 0,0 1,26 67V41A6,6 0,0 1,32 35Z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M48,35H76A6,6 0,0 1,82 41V67A6,6 0,0 1,76 73H48A4,4 0,0 0,45 69.13V38.87A4,4 0,0 0,48 35ZM51,45H71A2,2 0,0 1,71 49H51A2,2 0,0 1,51 45ZM51,53.5H75A1.5,1.5 0,0 1,75 56.5H51A1.5,1.5 0,0 1,51 53.5ZM51,60.5H67A1.5,1.5 0,0 1,67 63.5H51A1.5,1.5 0,0 1,51 60.5Z" />
+</vector>

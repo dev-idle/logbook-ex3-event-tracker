@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An empty circle on each ticket while selecting, checked once the ticket is selected. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_check_circle_filled" android:state_selected="true" />
+    <item android:drawable="@drawable/ic_radio_unchecked" />
+</selector>

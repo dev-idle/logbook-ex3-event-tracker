@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.EventTracker.TypeLabel" parent="">
+        <item name="android:background">@drawable/bg_type_label</item>
+        <item name="android:paddingStart">@dimen/type_label_padding_horizontal</item>
+        <item name="android:paddingEnd">@dimen/type_label_padding_horizontal</item>
+        <item name="android:paddingTop">@dimen/type_label_padding_vertical</item>
+        <item name="android:paddingBottom">@dimen/type_label_padding_vertical</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <!-- A large title on the same row as the buttons. -->
+    <style name="Widget.EventTracker.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextAppearance">?attr/textAppearanceHeadlineMedium</item>
+    </style>
+
+    <!-- Small extended FAB tokens, colored as in the Material FAB theming guide. -->
+    <style name="Widget.EventTracker.AddButton"
+        parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
+        <!-- The plus sign is inset 5dp in its icon, so 12dp matches the 16dp end visually. -->
+        <item name="android:paddingStart">@dimen/space_medium</item>
+        <item name="android:paddingEnd">@dimen/screen_padding</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="iconPadding">@dimen/space_small</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.AddButton</item>
+    </style>
+
+    <style name="ThemeOverlay.EventTracker.AddButton" parent="">
+        <item name="colorContainer">?attr/colorPrimary</item>
+        <item name="colorOnContainer">?attr/colorOnPrimary</item>
+    </style>
+
+    <!-- Confirming buttons that lose data, such as Delete and Discard, are red. -->
+    <style name="ThemeOverlay.EventTracker.DestructiveDialog"
+        parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.EventTracker.DestructiveButton</item>
+    </style>
+
+    <style name="Widget.EventTracker.DestructiveButton"
+        parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.DestructiveButton</item>
+    </style>
+
+    <style name="ThemeOverlay.EventTracker.DestructiveButton"
+        parent="ThemeOverlay.Material3.Button.TextButton">
+        <item name="colorOnContainer">?attr/colorError</item>
+    </style>
+
+    <!-- Messages line up with the tickets and share their corners and container blue. -->
+    <style name="Widget.EventTracker.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="android:layout_margin">@dimen/screen_padding</item>
+        <item name="backgroundTint">?attr/colorPrimaryContainer</item>
+        <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+    </style>
+
+    <style name="Widget.EventTracker.Snackbar.TextView" parent="Widget.Material3.Snackbar.TextView">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <style name="Widget.EventTracker.Snackbar.Button"
+        parent="Widget.Material3.Button.TextButton.Snackbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.SnackbarButton</item>
+    </style>
+
+    <style name="ThemeOverlay.EventTracker.SnackbarButton"
+        parent="ThemeOverlay.Material3.Button.TextButton.Snackbar">
+        <item name="colorOnContainer">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Chosen filters take the container blue of the tickets, not the gray secondary. -->
+    <style name="Widget.EventTracker.FilterChip" parent="Widget.Material3.Chip.Filter">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.EventTracker.FilterChip</item>
+    </style>
+
+    <style name="ThemeOverlay.EventTracker.FilterChip" parent="ThemeOverlay.Material3.Chip">
+        <item name="colorSecondaryContainer">?attr/colorPrimaryContainer</item>
+        <item name="colorOnSecondaryContainer">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <!-- The platform date picker takes its accents from attributes Material sets to secondary. -->
+    <style name="ThemeOverlay.EventTracker.Picker" parent="ThemeOverlay.Material3.Dialog">
+        <item name="android:colorAccent">?attr/colorPrimary</item>
+        <item name="android:colorControlActivated">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Opens below its button and ends under its dots, on the 16dp keyline. -->
+    <style name="Widget.EventTracker.OverflowMenu" parent="Widget.Material3.PopupMenu.Overflow">
+        <item name="overlapAnchor">false</item>
+        <item name="android:popupBackground">@drawable/bg_overflow_menu</item>
+    </style>
+
+    <!-- Material 3 menu item with a leading icon, for the menus MoreMenu opens. -->
+    <style name="Widget.EventTracker.MenuItem" parent="">
+        <item name="android:drawablePadding">@dimen/space_medium</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingStart">@dimen/space_medium</item>
+        <item name="android:paddingEnd">@dimen/space_medium</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="drawableTint">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <!-- Each field keeps a line for its message, so an error does not move the form. -->
+    <style name="Widget.EventTracker.TextField"
+        parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="errorEnabled">true</item>
+        <item name="errorIconDrawable">@drawable/ic_error_outline</item>
+    </style>
+
+    <style name="Widget.EventTracker.DropdownField"
+        parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="errorEnabled">true</item>
+    </style>
+
+    <!-- Medium square button tokens, matching the fields and the Add event button. -->
+    <style name="Widget.EventTracker.Button" parent="Widget.Material3.Button">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="shapeAppearance">?attr/shapeAppearanceCornerLarge</item>
+    </style>
+
+    <style name="Widget.EventTracker.MonthHeading" parent="">
+        <item name="android:accessibilityHeading">true</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:paddingStart">@dimen/card_margin</item>
+        <item name="android:paddingEnd">@dimen/card_margin</item>
+        <item name="android:paddingTop">@dimen/screen_padding</item>
+        <item name="android:paddingBottom">@dimen/card_margin</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="Widget.EventTracker.TicketStub" parent="">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <style name="Widget.EventTracker.TicketStub.Month">
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+    </style>
+
+    <style name="Widget.EventTracker.TicketStub.Day">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadlineSmall</item>
+    </style>
+
+    <style name="Widget.EventTracker.TicketStub.DayOfWeek">
+        <item name="android:textAppearance">?attr/textAppearanceBodySmall</item>
+    </style>
+
+    <style name="Widget.EventTracker.TicketTime" parent="">
+        <item name="android:textAppearance">?attr/textAppearanceTitleSmall</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="Widget.EventTracker.TicketTimeLine" parent="">
+        <item name="android:background">?attr/colorOutlineVariant</item>
+        <item name="android:layout_marginStart">@dimen/space_small</item>
+        <item name="android:layout_marginEnd">@dimen/space_small</item>
+    </style>
+
+    <style name="Widget.EventTracker.EventDetail" parent="">
+        <item name="android:drawablePadding">@dimen/space_small</item>
+        <item name="android:drawableTint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+</resources>
