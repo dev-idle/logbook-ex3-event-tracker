@@ -160,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             adapter.select(selectedIds);
             startSelection();
         }
-        if (savedInstanceState.getBoolean(STATE_DELETE_SHOWN)) {
+        // The filter may hide the selected events by now, such as once they have ended.
+        if (savedInstanceState.getBoolean(STATE_DELETE_SHOWN) && adapter.getSelectedCount() > 0) {
             showDeleteDialog();
         }
     }
