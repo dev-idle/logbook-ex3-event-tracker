@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 /**
  * Shows one saved event in full, with a menu to edit or delete it.
@@ -45,10 +46,13 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView typeLabel;
     private TextView statusText;
     private View timeBlock;
+    private TextView dayText;
+    private TextView dayOfWeekText;
+    private TextView monthText;
     private TextView startTimeText;
-    private TextView startDateText;
     private TextView lengthText;
     private TextView endTimeText;
+    private TextView nextDayText;
     private TextView endDateText;
     private TextView locationText;
     private TextView organizerText;
@@ -149,10 +153,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         typeLabel = findViewById(R.id.type_label);
         statusText = findViewById(R.id.event_status);
         timeBlock = findViewById(R.id.time_block);
+        dayText = findViewById(R.id.event_day);
+        dayOfWeekText = findViewById(R.id.event_day_of_week);
+        monthText = findViewById(R.id.event_month);
         startTimeText = findViewById(R.id.start_time);
-        startDateText = findViewById(R.id.start_date);
         lengthText = findViewById(R.id.event_length);
         endTimeText = findViewById(R.id.end_time);
+        nextDayText = findViewById(R.id.next_day);
         endDateText = findViewById(R.id.end_date);
         locationText = findViewById(R.id.event_location);
         organizerText = findViewById(R.id.event_organizer);
@@ -196,29 +203,34 @@ public class EventDetailsActivity extends AppCompatActivity {
         nameText.setText(event.getName());
         typeLabel.setText(type.getLabelRes());
         state.showStatus(statusText, event, state.daysAway(event, now.toLocalDate()));
-        showTimes();
+        showTimes(state);
         locationText.setText(event.getLocation());
         organizerText.setText(event.getOrganizer());
         state.showCancelled(nameText, typeLabel, type, startTimeText, endTimeText);
     }
 
-    /** Shows when the event starts and ends, with the end date in color if it is the next day. */
-    private void showTimes() {
+    /** Shows the date and a timeline from start to end, with the end date if it is the next day. */
+    private void showTimes(TicketState state) {
         LocalDate startDate = event.getDate();
         LocalDate endDate = event.getEnd().toLocalDate();
         String start = EventTimes.format(event.getStartTime());
         String end = EventTimes.format(event.getEndTime());
         String length = EventTimes.formatLength(
                 getResources(), event.getStartTime(), event.getEndTime());
+        dayText.setText(EventDates.formatDayOfMonth(startDate));
+        boolean over = state == TicketState.PAST || state == TicketState.CANCELLED;
+        // Blue like a colored ticket stub, or gray like a past or cancelled one.
+        dayText.setTextColor(MaterialColors.getColor(dayText, over
+                ? com.google.android.material.R.attr.colorOnSurfaceVariant
+                : androidx.appcompat.R.attr.colorPrimary));
+        dayOfWeekText.setText(EventDates.formatDayOfWeek(startDate));
+        monthText.setText(EventDates.formatMonth(YearMonth.from(startDate)));
         startTimeText.setText(start);
-        startDateText.setText(EventDates.formatMedium(startDate));
         lengthText.setText(length);
         endTimeText.setText(end);
-        endDateText.setText(EventDates.formatMedium(endDate));
-        // The same color as the +1 on the ticket.
-        endDateText.setTextColor(MaterialColors.getColor(endDateText, event.endsNextDay()
-                ? androidx.appcompat.R.attr.colorPrimary
-                : com.google.android.material.R.attr.colorOnSurfaceVariant));
+        nextDayText.setVisibility(event.endsNextDay() ? View.VISIBLE : View.GONE);
+        endDateText.setVisibility(event.endsNextDay() ? View.VISIBLE : View.GONE);
+        endDateText.setText(EventDates.formatLong(endDate));
         timeBlock.setContentDescription(getString(R.string.description_starts_ends,
                 start, EventDates.formatLong(startDate), end, EventDates.formatLong(endDate),
                 length));
