@@ -299,11 +299,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         Chip chip = (Chip) getLayoutInflater()
                 .inflate(R.layout.item_filter_chip, filterGroup, false);
         chip.setId(View.generateViewId());
-        chip.setChipIconResource(status.getIconRes());
         chip.setText(status.getLabelRes());
         chip.setTag(status);
-        // The check takes the place of the icon while chosen, as in Material 3.
-        chip.setOnCheckedChangeListener((button, checked) -> chip.setChipIconVisible(!checked));
         chip.setChecked(status == filter);
         filterGroup.addView(chip);
     }

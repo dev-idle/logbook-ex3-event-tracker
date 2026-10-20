@@ -127,7 +127,7 @@ from the command line:
 | `TicketDrawable.java`     | Ticket shape with the date stub and perforation |
 | `Event.java`              | Event model                                     |
 | `EventType.java`          | Event types and their label colors              |
-| `EventStatus.java`        | Event statuses, filter texts and icons          |
+| `EventStatus.java`        | Event statuses and their filter texts           |
 | `EventValidator.java`     | Validation, status rules and duplicate check    |
 | `EventDates.java`         | Date parsing and formatting                     |
 | `EventTimes.java`         | Time slots, lengths and formatting              |
