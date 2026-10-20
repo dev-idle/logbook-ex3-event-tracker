@@ -2,7 +2,6 @@ package com.comp1786.logbook.eventtracker;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.RippleDrawable;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
@@ -22,9 +20,7 @@ import com.google.android.material.color.MaterialColors;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.YearMonth;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -221,13 +217,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         EventType type = event.getType();
         TicketState state = row.state;
 
-        holder.ticket.setStubColor(MaterialColors.getColor(holder.itemView, state.stubColorAttr));
-        int stubTextColor = MaterialColors.getColor(holder.itemView, state.stubTextColorAttr);
+        holder.ticket.setStubColor(
+                MaterialColors.getColor(holder.itemView, state.getStubColorAttr()));
+        int stubTextColor = MaterialColors.getColor(holder.itemView, state.getStubTextColorAttr());
         holder.monthText.setTextColor(stubTextColor);
         holder.dayText.setTextColor(stubTextColor);
         holder.dayOfWeekText.setTextColor(stubTextColor);
         holder.statusText.setTextColor(
-                MaterialColors.getColor(holder.itemView, state.statusColorAttr));
+                MaterialColors.getColor(holder.itemView, state.getStatusColorAttr()));
         holder.statusText.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 state == TicketState.LIVE ? R.drawable.ic_live : 0, 0, 0, 0);
 
@@ -237,7 +234,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         holder.dayOfWeekText.setText(EventDates.formatShortDayOfWeek(date));
         holder.nameText.setText(event.getName());
         holder.typeLabel.setText(type.getLabelRes());
-        holder.statusText.setText(statusText(context, row));
+        holder.statusText.setText(state.statusText(context, event, row.daysAway));
         bindTimes(holder, event);
         holder.locationText.setText(event.getLocation());
         holder.organizerText.setText(event.getOrganizer());
@@ -250,8 +247,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         // Selecting the view also checks the circle, outlines the ticket and tells screen readers.
         holder.itemView.setSelected(selected);
         holder.selectionCheck.setVisibility(selecting ? View.VISIBLE : View.GONE);
-        // Screen readers say "Double tap to select" while selecting, otherwise "to edit event".
-        int actionRes = !selecting ? R.string.description_edit_event
+        // Screen readers say "Double tap to select" while selecting, otherwise "to view details".
+        int actionRes = !selecting ? R.string.description_view_details
                 : selected ? R.string.description_deselect : R.string.description_select;
         ViewCompat.replaceAccessibilityAction(holder.itemView,
                 AccessibilityActionCompat.ACTION_CLICK,
@@ -292,54 +289,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 start, end, length));
     }
 
-    /** Describes the status with when the event is, such as "Upcoming in 6 days". */
-    private static String statusText(Context context, Row row) {
-        if (row.state == TicketState.LIVE) {
-            return context.getString(R.string.status_live);
-        } else if (row.state == TicketState.CANCELLED) {
-            return context.getString(R.string.status_cancelled);
-        }
-        long days = row.daysAway;
-        LocalDate date = countdownDate(row.event, row.state);
-        LocalDate today = date.minusDays(days);
-        if (days == 0) {
-            return context.getString(row.state == TicketState.PAST
-                    ? R.string.status_completed_today : R.string.status_upcoming_today);
-        } else if (days == 1) {
-            return context.getString(R.string.status_upcoming_tomorrow);
-        } else if (days == -1) {
-            return context.getString(R.string.status_completed_yesterday);
-        }
-        Period period = days > 0 ? Period.between(today, date) : Period.between(date, today);
-        Resources res = context.getResources();
-        String duration;
-        if (period.getYears() > 0) {
-            duration = res.getQuantityString(
-                    R.plurals.duration_years, period.getYears(), period.getYears());
-        } else if (period.getMonths() > 0) {
-            duration = res.getQuantityString(
-                    R.plurals.duration_months, period.getMonths(), period.getMonths());
-        } else {
-            duration = res.getQuantityString(
-                    R.plurals.duration_days, period.getDays(), period.getDays());
-        }
-        return context.getString(days > 0
-                ? R.string.status_upcoming_in : R.string.status_completed_ago, duration);
-    }
-
     /** Adds month headings and works out the state of each event at the given time. */
     private static List<Row> buildRows(List<Event> events, LocalDateTime now) {
-        // Events happening now stand out; when none is, the next ones to start do.
-        boolean anyLive = false;
-        LocalDateTime nextStart = null;
-        for (Event event : events) {
-            TicketState state = stateAt(event, now);
-            if (state == TicketState.LIVE) {
-                anyLive = true;
-            } else if (state == TicketState.UPCOMING && nextStart == null) {
-                nextStart = event.getStart();
-            }
-        }
+        LocalDateTime nextStart = TicketState.nextStart(events, now);
         List<Row> rows = new ArrayList<>();
         YearMonth month = null;
         for (Event event : events) {
@@ -348,64 +300,10 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 month = eventMonth;
                 rows.add(new Row(month, null, null, 0));
             }
-            TicketState state = stateAt(event, now);
-            if (state == TicketState.UPCOMING && !anyLive && event.getStart().equals(nextStart)) {
-                state = TicketState.NEXT;
-            }
-            long daysAway =
-                    ChronoUnit.DAYS.between(now.toLocalDate(), countdownDate(event, state));
-            rows.add(new Row(month, event, state, daysAway));
+            TicketState state = TicketState.at(event, now, nextStart);
+            rows.add(new Row(month, event, state, state.daysAway(event, now.toLocalDate())));
         }
         return rows;
-    }
-
-    /** Returns the day a countdown counts to: the end for past events, otherwise the start. */
-    private static LocalDate countdownDate(Event event, TicketState state) {
-        return state == TicketState.PAST ? event.getEnd().toLocalDate() : event.getDate();
-    }
-
-    private static TicketState stateAt(Event event, LocalDateTime now) {
-        if (event.getStatus() == EventStatus.CANCELLED) {
-            return TicketState.CANCELLED;
-        } else if (!event.getEnd().isAfter(now)) {
-            return TicketState.PAST;
-        }
-        return event.getStart().isAfter(now) ? TicketState.UPCOMING : TicketState.LIVE;
-    }
-
-    /** Where an event is in time, or that it was cancelled, with the ticket colors that show it. */
-    private enum TicketState {
-
-        LIVE(androidx.appcompat.R.attr.colorPrimary,
-                com.google.android.material.R.attr.colorOnPrimary,
-                androidx.appcompat.R.attr.colorPrimary),
-        NEXT(androidx.appcompat.R.attr.colorPrimary,
-                com.google.android.material.R.attr.colorOnPrimary,
-                androidx.appcompat.R.attr.colorPrimary),
-        UPCOMING(com.google.android.material.R.attr.colorPrimaryContainer,
-                com.google.android.material.R.attr.colorOnPrimaryContainer,
-                com.google.android.material.R.attr.colorOnSurfaceVariant),
-        PAST(com.google.android.material.R.attr.colorSurfaceContainerHighest,
-                com.google.android.material.R.attr.colorOnSurfaceVariant,
-                com.google.android.material.R.attr.colorOnSurfaceVariant),
-        // The only status in color, as the one that does not follow from the time.
-        CANCELLED(com.google.android.material.R.attr.colorSurfaceContainerHighest,
-                com.google.android.material.R.attr.colorOnSurfaceVariant,
-                androidx.appcompat.R.attr.colorError);
-
-        @AttrRes
-        private final int stubColorAttr;
-        @AttrRes
-        private final int stubTextColorAttr;
-        @AttrRes
-        private final int statusColorAttr;
-
-        TicketState(@AttrRes int stubColorAttr, @AttrRes int stubTextColorAttr,
-                @AttrRes int statusColorAttr) {
-            this.stubColorAttr = stubColorAttr;
-            this.stubTextColorAttr = stubTextColorAttr;
-            this.statusColorAttr = statusColorAttr;
-        }
     }
 
     /** A month heading when event is null, otherwise an event in that month. */

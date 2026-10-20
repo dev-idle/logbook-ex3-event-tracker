@@ -60,7 +60,7 @@
         <item quantity="other">%d events deleted</item>
     </plurals>
     <string name="button_undo">Undo</string>
-    <string name="description_edit_event">Edit event</string>
+    <string name="description_view_details">View details</string>
 
     <!-- Selecting tickets to delete several events at once -->
     <string name="menu_select_events">Select events</string>
@@ -85,7 +85,12 @@
 
     <string name="title_add_event">Add event</string>
     <string name="title_edit_event">Edit event</string>
+    <string name="title_event_details">Event details</string>
+    <string name="label_starts">Starts</string>
+    <string name="label_ends">Ends</string>
+    <string name="description_starts_ends">Starts at %1$s on %2$s, ends at %3$s on %4$s, %5$s</string>
     <string name="menu_more">More options</string>
+    <string name="menu_edit">Edit event</string>
     <string name="menu_delete">Delete event</string>
     <string name="label_name">Event name</string>
     <string name="label_date">Event date</string>

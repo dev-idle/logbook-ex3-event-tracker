@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EventDetailsActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationContentDescription="@string/description_navigate_up"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/title_event_details" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/screen_padding">
+
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Android Dev Summit" />
+
+            <TextView
+                android:id="@+id/type_label"
+                style="@style/Widget.EventTracker.TypeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_small"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/event_name"
+                tools:text="@string/type_conference" />
+
+            <TextView
+                android:id="@+id/event_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_small"
+                android:drawablePadding="@dimen/live_dot_padding"
+                android:textAppearance="?attr/textAppearanceLabelMedium"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                app:layout_constraintBaseline_toBaselineOf="@id/type_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/type_label"
+                tools:text="Upcoming in 6 days" />
+
+            <!-- Below the taller label, so a status that wraps at large text sizes never overlaps. -->
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/labels_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="type_label,event_status" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/time_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/labels_bottom" />
+
+            <!-- Start and end on either side, like a flight, read out as one sentence. -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/time_block"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                android:screenReaderFocusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/time_divider"
+                tools:contentDescription="Starts at 19:00 on Saturday 24 October 2026">
+
+                <!-- Each side takes up to half the width, so long dates wrap instead of meeting. -->
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/time_middle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <TextView
+                    android:id="@+id/start_label"
+                    style="@style/Widget.EventTracker.DetailLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:text="@string/label_starts"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/start_time"
+                    style="@style/Widget.EventTracker.DetailTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/start_label"
+                    tools:text="19:00" />
+
+                <TextView
+                    android:id="@+id/start_date"
+                    style="@style/Widget.EventTracker.DetailDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/space_small"
+                    android:importantForAccessibility="no"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toStartOf="@id/time_middle"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/start_time"
+                    tools:text="Sat 24 Oct 2026" />
+
+                <TextView
+                    android:id="@+id/end_label"
+                    style="@style/Widget.EventTracker.DetailLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:text="@string/label_ends"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/end_time"
+                    style="@style/Widget.EventTracker.DetailTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/end_label"
+                    tools:text="23:00" />
+
+                <TextView
+                    android:id="@+id/end_date"
+                    style="@style/Widget.EventTracker.DetailDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_small"
+                    android:gravity="end"
+                    android:importantForAccessibility="no"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/time_middle"
+                    app:layout_constraintTop_toBottomOf="@id/end_time"
+                    tools:text="Sat 24 Oct 2026" />
+
+                <View
+                    android:id="@+id/start_line"
+                    style="@style/Widget.EventTracker.TicketTimeLine"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/ticket_time_line_height"
+                    app:layout_constraintBottom_toBottomOf="@id/start_time"
+                    app:layout_constraintEnd_toStartOf="@id/event_length"
+                    app:layout_constraintStart_toEndOf="@id/start_time"
+                    app:layout_constraintTop_toTopOf="@id/start_time" />
+
+                <TextView
+                    android:id="@+id/event_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/space_small"
+                    android:layout_marginEnd="@dimen/space_small"
+                    android:ellipsize="end"
+                    android:importantForAccessibility="no"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="@id/start_time"
+                    app:layout_constraintEnd_toStartOf="@id/end_time"
+                    app:layout_constraintStart_toEndOf="@id/start_time"
+                    app:layout_constraintTop_toTopOf="@id/start_time"
+                    tools:text="4 hr" />
+
+                <View
+                    android:id="@+id/end_line"
+                    style="@style/Widget.EventTracker.TicketTimeLine"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/ticket_time_line_height"
+                    app:layout_constraintBottom_toBottomOf="@id/start_time"
+                    app:layout_constraintEnd_toStartOf="@id/end_time"
+                    app:layout_constraintStart_toEndOf="@id/event_length"
+                    app:layout_constraintTop_toTopOf="@id/start_time" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/place_divider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/time_block" />
+
+            <LinearLayout
+                android:id="@+id/location_row"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                android:screenReaderFocusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/place_divider">
+
+                <ImageView
+                    android:layout_width="@dimen/detail_icon_size"
+                    android:layout_height="@dimen/detail_icon_size"
+                    android:layout_marginTop="@dimen/space_small"
+                    android:layout_marginEnd="@dimen/card_padding"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_place"
+                    app:tint="?attr/colorOnSurfaceVariant" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Widget.EventTracker.DetailLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_location" />
+
+                    <TextView
+                        android:id="@+id/event_location"
+                        style="@style/Widget.EventTracker.DetailValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Greenwich Campus" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/organizer_row"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/screen_padding"
+                android:screenReaderFocusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/location_row">
+
+                <ImageView
+                    android:layout_width="@dimen/detail_icon_size"
+                    android:layout_height="@dimen/detail_icon_size"
+                    android:layout_marginTop="@dimen/space_small"
+                    android:layout_marginEnd="@dimen/card_padding"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_person"
+                    app:tint="?attr/colorOnSurfaceVariant" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Widget.EventTracker.DetailLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_organizer" />
+
+                    <TextView
+                        android:id="@+id/event_organizer"
+                        style="@style/Widget.EventTracker.DetailValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Google UK" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

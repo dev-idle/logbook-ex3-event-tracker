@@ -13,17 +13,14 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.ListPopupWindow;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,13 +61,11 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
 
     private final ActivityResultLauncher<Intent> addEventLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            result -> showSavedEvent(result, R.string.message_event_added));
-    private final ActivityResultLauncher<Intent> editEventLauncher = registerForActivityResult(
+            this::showAddedEvent);
+    private final ActivityResultLauncher<Intent> detailsLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == AddEventActivity.RESULT_DELETED) {
+                if (result.getResultCode() == EventDetailsActivity.RESULT_DELETED) {
                     showDeletedEvent(result);
-                } else {
-                    showSavedEvent(result, R.string.message_event_updated);
                 }
             });
     // Back leaves selecting before it leaves the app.
@@ -218,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_more) {
-            moreMenu = MoreMenu.show(this, item.getActionView(),
-                    R.layout.item_menu_select, R.string.menu_select_events, this::startSelection);
+            moreMenu = MoreMenu.show(this, item.getActionView(), new MoreMenu.Item(
+                    R.layout.item_menu_select, R.string.menu_select_events, this::startSelection));
             return true;
         } else if (id == R.id.action_select_all) {
             if (adapter.isAllSelected()) {
@@ -242,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
             adapter.toggleSelected(event.getId());
             showSelection();
         } else {
-            openEditEvent(event);
+            openEventDetails(event);
         }
     }
 
@@ -307,20 +302,20 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         addEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class));
     }
 
-    private void openEditEvent(Event event) {
-        editEventLauncher.launch(new Intent(MainActivity.this, AddEventActivity.class)
-                .putExtra(AddEventActivity.EXTRA_EVENT, event));
+    private void openEventDetails(Event event) {
+        detailsLauncher.launch(new Intent(MainActivity.this, EventDetailsActivity.class)
+                .putExtra(EventDetailsActivity.EXTRA_EVENT_ID, event.getId()));
     }
 
-    /** Scrolls to an event that was just saved and confirms it with the message. */
-    private void showSavedEvent(ActivityResult result, @StringRes int messageRes) {
+    /** Scrolls to an event that was just added and confirms it with a message. */
+    private void showAddedEvent(ActivityResult result) {
         Intent data = result.getData();
         if (result.getResultCode() != RESULT_OK || data == null) {
             return;
         }
         scrollToEvent(data.getLongExtra(AddEventActivity.EXTRA_EVENT_ID, Event.NO_ID));
-        makeSnackbar(getString(messageRes), R.drawable.ic_check_circle, Snackbar.LENGTH_SHORT)
-                .show();
+        IconSnackbar.make(eventList, getString(R.string.message_event_added),
+                R.drawable.ic_check_circle, Snackbar.LENGTH_SHORT).show();
     }
 
     /** Scrolls to an event, first showing every event if the filter hides it. */
@@ -331,11 +326,11 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
         eventList.scrollToPosition(adapter.positionOf(id));
     }
 
-    /** Confirms that the event deleted from the edit screen is gone. */
+    /** Confirms that the event deleted from its details screen is gone. */
     private void showDeletedEvent(ActivityResult result) {
         Intent data = result.getData();
         Event event = data == null
-                ? null : data.getSerializableExtra(AddEventActivity.EXTRA_EVENT, Event.class);
+                ? null : data.getSerializableExtra(EventDetailsActivity.EXTRA_EVENT, Event.class);
         if (event != null) {
             showDeletedEvents(Collections.singletonList(event));
         }
@@ -344,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     /** Confirms that events were deleted, with an action that saves them again. */
     private void showDeletedEvents(List<Event> events) {
         int count = events.size();
-        Snackbar snackbar = makeSnackbar(
+        Snackbar snackbar = IconSnackbar.make(eventList,
                 getResources().getQuantityString(R.plurals.message_events_deleted, count, count),
                 R.drawable.ic_delete, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.button_undo, v -> {
@@ -413,18 +408,6 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
                     showDeletedEvents(events);
                 })
                 .show();
-    }
-
-    /** Returns a message at the bottom of the screen, with an icon before its text. */
-    private Snackbar makeSnackbar(CharSequence message, @DrawableRes int iconRes, int duration) {
-        // Without an anchor, the Add event button moves up while the message shows.
-        Snackbar snackbar = Snackbar.make(eventList, message, duration);
-        TextView text =
-                snackbar.getView().findViewById(com.google.android.material.R.id.snackbar_text);
-        text.setCompoundDrawablesRelativeWithIntrinsicBounds(iconRes, 0, 0, 0);
-        text.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.space_medium));
-        TextViewCompat.setCompoundDrawableTintList(text, text.getTextColors());
-        return snackbar;
     }
 
     /** Shows the events the filter keeps and their number, or the empty state if there are none. */

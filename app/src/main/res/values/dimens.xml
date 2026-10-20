@@ -27,6 +27,9 @@
     <dimen name="live_dot_padding">6dp</dimen>
     <dimen name="ticket_time_line_height">1dp</dimen>
 
+    <!-- Material 3 list item leading icon -->
+    <dimen name="detail_icon_size">24dp</dimen>
+
     <dimen name="type_label_padding_horizontal">8dp</dimen>
     <dimen name="type_label_padding_vertical">2dp</dimen>
 </resources>
