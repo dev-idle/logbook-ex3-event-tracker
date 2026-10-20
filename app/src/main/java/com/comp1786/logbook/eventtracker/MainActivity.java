@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     private EventStatus filter;
     private AlertDialog deleteDialog;
     private ListPopupWindow moreMenu;
+    // Set while another screen opens, so a quick second tap does not open it twice.
+    private boolean opening;
 
     private final ActivityResultLauncher<Intent> addEventLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -135,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     @Override
     protected void onStart() {
         super.onStart();
+        opening = false;
         // Reloads the saved events, whose states and countdowns change as time passes.
         showEvents();
     }
@@ -303,10 +306,18 @@ public class MainActivity extends AppCompatActivity implements EventAdapter.OnEv
     }
 
     private void openAddEvent() {
+        if (opening) {
+            return;
+        }
+        opening = true;
         addEventLauncher.launch(new Intent(MainActivity.this, AddEditEventActivity.class));
     }
 
     private void openEventDetails(Event event) {
+        if (opening) {
+            return;
+        }
+        opening = true;
         detailsLauncher.launch(new Intent(MainActivity.this, EventDetailsActivity.class)
                 .putExtra(EventDetailsActivity.EXTRA_EVENT_ID, event.getId()));
     }

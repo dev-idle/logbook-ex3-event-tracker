@@ -280,6 +280,10 @@ public class AddEditEventActivity extends AppCompatActivity {
 
     /** Opens the picker on the date typed so far, or on today if it is not a valid date. */
     private void showDatePicker() {
+        // A quick second tap would otherwise open a second picker.
+        if (getSupportFragmentManager().findFragmentByTag(DatePickerFragment.REQUEST_KEY) != null) {
+            return;
+        }
         EventValidator.Result<LocalDate> typed = EventValidator.validateDate(textOf(dateInput));
         LocalDate date = typed.isValid() ? typed.getValue() : LocalDate.now();
         DatePickerFragment.newInstance(date)
