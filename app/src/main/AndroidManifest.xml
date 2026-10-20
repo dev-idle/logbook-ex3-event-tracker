@@ -25,10 +25,12 @@
         <activity
             android:name=".AddEditEventActivity"
             android:exported="false"
+            android:label="@string/title_add_event"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EventDetailsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/title_event_details" />
     </application>
 
 </manifest>

@@ -110,7 +110,7 @@ public class AddEditEventActivity extends AppCompatActivity {
         buildStatusMenu();
         eventToEdit = getIntent().getSerializableExtra(EXTRA_EVENT, Event.class);
         if (eventToEdit != null) {
-            toolbar.setTitle(R.string.title_edit_event);
+            setTitle(R.string.title_edit_event);
             saveButton.setText(R.string.button_save_changes);
             if (savedInstanceState == null) {
                 fillForm(eventToEdit);
