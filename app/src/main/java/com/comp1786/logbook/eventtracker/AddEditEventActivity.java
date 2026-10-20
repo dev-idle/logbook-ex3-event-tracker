@@ -3,6 +3,7 @@ package com.comp1786.logbook.eventtracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
@@ -467,6 +468,11 @@ public class AddEditEventActivity extends AppCompatActivity {
                 return;
             }
             layout.setError(null);
+            if (layout == dateLayout && TextUtils.equals(nameLayout.getError(),
+                    getString(R.string.error_name_duplicate))) {
+                // A name only clashes with an event on the same date.
+                nameLayout.setError(null);
+            }
             discardCallback.setEnabled(hasChanges());
             if (layout == dateLayout || layout == startTimeLayout || layout == endTimeLayout) {
                 // The status rule depends on when the event ends.
