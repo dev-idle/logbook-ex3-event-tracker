@@ -27,8 +27,8 @@ status.
 
 - Name: required, and not already used on the same date, ignoring case. When
   editing, the event's own name does not count as a duplicate.
-- Date: required, DD/MM/YYYY, a real date, and from 01/01/1900 to 31/12/2100,
-  the range of Android's date picker [4].
+- Date: required, day/month/year such as 5/3/2026 or 05/03/2026, a real date,
+  and from 01/01/1900 to 31/12/2100, the range of Android's date picker [4].
 - Start and end time: required. The end must differ from the start.
 - Location, organizer and type: required.
 - Status: Completed only once the event has ended, and Upcoming only before

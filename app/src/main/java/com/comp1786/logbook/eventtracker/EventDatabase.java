@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Saves events in SQLite, as the module guide's database helper does.
+ * Saves events in SQLite, as the module brief's database helper does.
  */
 public class EventDatabase extends SQLiteOpenHelper {
 

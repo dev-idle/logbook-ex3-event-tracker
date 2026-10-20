@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Material 3 color scheme generated from seed #2E6FD8, a Luminous Blue tone -->
+    <!-- Material 3 color scheme generated from seed #2E6FD8 -->
     <color name="md_theme_light_primary">#455E91</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#D8E2FF</color>

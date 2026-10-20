@@ -31,7 +31,7 @@ public final class EventValidator {
         return value.isEmpty() ? Result.invalid(Reason.EMPTY) : Result.valid(value);
     }
 
-    /** Validates a date typed as DD/MM/YYYY. */
+    /** Validates a date typed as D/M/YYYY or DD/MM/YYYY. */
     public static Result<LocalDate> validateDate(String text) {
         String value = text.trim();
         if (value.isEmpty()) {

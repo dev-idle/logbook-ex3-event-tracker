@@ -61,7 +61,7 @@
                 app:layout_constraintStart_toEndOf="@id/type_label"
                 tools:text="Upcoming in 6 days" />
 
-            <!-- Below the taller label, so a status that wraps at large text sizes never overlaps. -->
+            <!-- Below the taller label, so a wrapped status never overlaps. -->
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/labels_bottom"
                 android:layout_width="wrap_content"

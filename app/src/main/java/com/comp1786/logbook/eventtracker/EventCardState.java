@@ -34,7 +34,7 @@ public enum EventCardState {
     PAST(com.google.android.material.R.attr.colorSurfaceContainerHighest,
             com.google.android.material.R.attr.colorOnSurfaceVariant,
             com.google.android.material.R.attr.colorOnSurfaceVariant),
-    // The only status in color, as the one that does not follow from the time.
+    // The only status in red, as the one that does not follow from the time.
     CANCELLED(com.google.android.material.R.attr.colorSurfaceContainerHighest,
             com.google.android.material.R.attr.colorOnSurfaceVariant,
             androidx.appcompat.R.attr.colorError);

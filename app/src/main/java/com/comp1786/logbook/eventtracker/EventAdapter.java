@@ -260,7 +260,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 AccessibilityActionCompat.ACTION_LONG_CLICK, context.getString(selectRes), null);
     }
 
-    /** Shows the start, end and length like a boarding pass, read out as one sentence. */
+    /** Shows the start, end and length in one row, read out as one sentence. */
     private static void bindTimes(EventViewHolder holder, Event event) {
         Context context = holder.itemView.getContext();
         String start = EventTimes.format(event.getStartTime());

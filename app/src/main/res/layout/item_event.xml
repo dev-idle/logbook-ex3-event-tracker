@@ -182,7 +182,7 @@
             app:layout_goneMarginEnd="0dp"
             tools:text="23:00" />
 
-        <!-- Raised beside the end time, like the +1 on a flight that lands the next day. -->
+        <!-- Raised beside the end time when it falls on the next day. -->
         <TextView
             android:id="@+id/next_day"
             android:layout_width="wrap_content"
