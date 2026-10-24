@@ -30,7 +30,7 @@
     <!-- Material 3 list item leading icon -->
     <dimen name="detail_icon_size">24dp</dimen>
     <dimen name="detail_icon_margin">16dp</dimen>
-    <dimen name="timeline_width">2dp</dimen>
+    <dimen name="detail_row_min_height">56dp</dimen>
 
     <dimen name="type_label_padding_horizontal">8dp</dimen>
     <dimen name="type_label_padding_vertical">2dp</dimen>
