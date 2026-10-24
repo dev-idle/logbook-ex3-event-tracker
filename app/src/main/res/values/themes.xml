@@ -44,8 +44,8 @@
         <item name="snackbarButtonStyle">@style/Widget.EventTracker.Snackbar.Button</item>
     </style>
 
-    <!-- The list screen draws its background once, through the window. -->
-    <style name="Theme.EventTracker.List">
+    <!-- The list and details screens draw the header tone once, through the window. -->
+    <style name="Theme.EventTracker.Cards">
         <item name="android:windowBackground">@color/list_background</item>
     </style>
 </resources>

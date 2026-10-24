@@ -177,20 +177,24 @@
     </style>
 
     <!-- Event details screen -->
-    <style name="Widget.EventTracker.DetailLabel" parent="">
-        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
-        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    <!-- A card on the header tone, with the corners of the event cards. -->
+    <style name="Widget.EventTracker.DetailCard" parent="">
+        <item name="android:background">@drawable/bg_detail_card</item>
+        <item name="android:clipToOutline">true</item>
+        <item name="android:layout_marginTop">@dimen/space_small</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingTop">@dimen/space_small</item>
+        <item name="android:paddingBottom">@dimen/space_small</item>
     </style>
 
-    <!-- The day of the month, colored like the date panel of the card. -->
-    <style name="Widget.EventTracker.DetailDay" parent="">
-        <item name="android:textAppearance">?attr/textAppearanceDisplayMedium</item>
-        <item name="android:textColor">?attr/colorPrimary</item>
-    </style>
-
-    <style name="Widget.EventTracker.DetailTime" parent="">
-        <item name="android:textAppearance">?attr/textAppearanceHeadlineSmall</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
+    <!-- A Material 3 list item: an icon, then its text, across the full width of the card. -->
+    <style name="Widget.EventTracker.DetailRow" parent="">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">@dimen/detail_row_min_height</item>
+        <item name="android:paddingStart">@dimen/screen_padding</item>
+        <item name="android:paddingTop">@dimen/space_small</item>
+        <item name="android:paddingEnd">@dimen/screen_padding</item>
+        <item name="android:paddingBottom">@dimen/space_small</item>
     </style>
 
     <style name="Widget.EventTracker.DetailSupporting" parent="">

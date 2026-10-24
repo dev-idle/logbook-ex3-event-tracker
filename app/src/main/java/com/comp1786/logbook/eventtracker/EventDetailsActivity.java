@@ -19,13 +19,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 
 /**
  * Shows one saved event in full, with a menu to edit or delete it.
@@ -45,17 +42,14 @@ public class EventDetailsActivity extends AppCompatActivity {
     private TextView nameText;
     private TextView typeLabel;
     private TextView statusText;
-    private View timeBlock;
-    private TextView dayText;
-    private TextView dayOfWeekText;
-    private TextView monthText;
-    private TextView startTimeText;
-    private TextView lengthText;
-    private TextView endTimeText;
+    private TextView dateText;
+    private View timeRow;
+    private TextView timeText;
     private TextView nextDayText;
-    private TextView endDateText;
+    private TextView lengthText;
     private TextView locationText;
     private TextView organizerText;
+    private View content;
 
     private EventDatabase database;
     private long eventId;
@@ -80,8 +74,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
-                    | WindowInsetsCompat.Type.displayCutout() | WindowInsetsCompat.Type.ime());
-            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+                    | WindowInsetsCompat.Type.displayCutout());
+            // The card scrolls under the navigation bar and ends clear of it.
+            v.setPadding(bars.left, bars.top, bars.right, 0);
+            content.setPadding(content.getPaddingLeft(), content.getPaddingTop(),
+                    content.getPaddingRight(),
+                    getResources().getDimensionPixelSize(R.dimen.screen_padding) + bars.bottom);
             return insets;
         });
 
@@ -152,17 +150,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         nameText = findViewById(R.id.event_name);
         typeLabel = findViewById(R.id.type_label);
         statusText = findViewById(R.id.event_status);
-        timeBlock = findViewById(R.id.time_block);
-        dayText = findViewById(R.id.event_day);
-        dayOfWeekText = findViewById(R.id.event_day_of_week);
-        monthText = findViewById(R.id.event_month);
-        startTimeText = findViewById(R.id.start_time);
-        lengthText = findViewById(R.id.event_length);
-        endTimeText = findViewById(R.id.end_time);
+        dateText = findViewById(R.id.event_date);
+        timeRow = findViewById(R.id.time_row);
+        timeText = findViewById(R.id.event_time);
         nextDayText = findViewById(R.id.next_day);
-        endDateText = findViewById(R.id.end_date);
+        lengthText = findViewById(R.id.event_length);
         locationText = findViewById(R.id.event_location);
         organizerText = findViewById(R.id.event_organizer);
+        content = findViewById(R.id.content);
     }
 
     private void openEditEvent() {
@@ -203,36 +198,29 @@ public class EventDetailsActivity extends AppCompatActivity {
         nameText.setText(event.getName());
         typeLabel.setText(type.getLabelRes());
         state.showStatus(statusText, event, state.daysAway(event, now.toLocalDate()));
-        showTimes(state);
+        showTimes();
+        // Without labels on screen, screen readers hear what each row is.
         locationText.setText(event.getLocation());
+        locationText.setContentDescription(
+                getString(R.string.description_location, event.getLocation()));
         organizerText.setText(event.getOrganizer());
-        state.showCancelled(nameText, typeLabel, type, startTimeText, endTimeText);
+        organizerText.setContentDescription(
+                getString(R.string.description_organizer, event.getOrganizer()));
+        state.showCancelled(nameText, typeLabel, type, dateText, timeText);
     }
 
-    /** Shows the date and a timeline from start to end, with the end date if it is the next day. */
-    private void showTimes(EventCardState state) {
-        LocalDate startDate = event.getDate();
-        LocalDate endDate = event.getEnd().toLocalDate();
+    /** Shows the date, then the times and length, with a +1 when the event ends the next day. */
+    private void showTimes() {
         String start = EventTimes.format(event.getStartTime());
         String end = EventTimes.format(event.getEndTime());
         String length = EventTimes.formatLength(
                 getResources(), event.getStartTime(), event.getEndTime());
-        dayText.setText(EventDates.formatDayOfMonth(startDate));
-        boolean over = state == EventCardState.PAST || state == EventCardState.CANCELLED;
-        // Blue like a colored date panel, or gray like a past or cancelled one.
-        dayText.setTextColor(MaterialColors.getColor(dayText, over
-                ? com.google.android.material.R.attr.colorOnSurfaceVariant
-                : androidx.appcompat.R.attr.colorPrimary));
-        dayOfWeekText.setText(EventDates.formatDayOfWeek(startDate));
-        monthText.setText(EventDates.formatMonth(YearMonth.from(startDate)));
-        startTimeText.setText(start);
+        dateText.setText(EventDates.formatLong(event.getDate()));
+        timeText.setText(getString(R.string.time_range, start, end));
         lengthText.setText(length);
-        endTimeText.setText(end);
         nextDayText.setVisibility(event.endsNextDay() ? View.VISIBLE : View.GONE);
-        endDateText.setVisibility(event.endsNextDay() ? View.VISIBLE : View.GONE);
-        endDateText.setText(EventDates.formatLong(endDate));
-        timeBlock.setContentDescription(getString(R.string.description_starts_ends,
-                start, EventDates.formatLong(startDate), end, EventDates.formatLong(endDate),
-                length));
+        timeRow.setContentDescription(getString(event.endsNextDay()
+                ? R.string.description_time_range_next_day : R.string.description_time_range,
+                start, end, length));
     }
 }

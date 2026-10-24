@@ -22,324 +22,202 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- A card on the header tone, as on the list. -->
+        <LinearLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/screen_padding">
+            android:orientation="vertical"
+            android:paddingStart="@dimen/screen_padding"
+            android:paddingTop="@dimen/space_small"
+            android:paddingEnd="@dimen/screen_padding">
 
-            <TextView
-                android:id="@+id/event_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                android:textColor="?attr/colorOnSurface"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Android Dev Summit" />
+            <!-- The event, as its card on the list shows it, with every detail. -->
+            <LinearLayout
+                style="@style/Widget.EventTracker.DetailCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/type_label"
-                style="@style/Widget.EventTracker.TypeLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_small"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/event_name"
-                tools:text="@string/type_conference" />
-
-            <TextView
-                android:id="@+id/event_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_small"
-                android:drawablePadding="@dimen/live_dot_padding"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                app:layout_constraintBaseline_toBaselineOf="@id/type_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/type_label"
-                tools:text="Upcoming in 6 days" />
-
-            <!-- Below the taller label, so a wrapped status never overlaps. -->
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/labels_bottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="type_label,event_status" />
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/time_divider"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_padding"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/labels_bottom" />
-
-            <!-- The date, then a timeline from start to end, read out as one sentence. -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/time_block"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_padding"
-                android:screenReaderFocusable="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/time_divider"
-                tools:contentDescription="Starts at 19:00 on Saturday 24 October 2026">
-
-                <LinearLayout
-                    android:id="@+id/date_row"
-                    android:layout_width="0dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:paddingStart="@dimen/screen_padding"
+                    android:paddingTop="@dimen/space_small"
+                    android:paddingEnd="@dimen/screen_padding">
 
                     <TextView
-                        android:id="@+id/event_day"
-                        style="@style/Widget.EventTracker.DetailDay"
+                        android:id="@+id/event_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                        android:textColor="?attr/colorOnSurface"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Android Dev Summit" />
+
+                    <TextView
+                        android:id="@+id/type_label"
+                        style="@style/Widget.EventTracker.TypeLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_small"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/event_name"
+                        tools:text="@string/type_conference" />
+
+                    <TextView
+                        android:id="@+id/event_status"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_small"
+                        android:drawablePadding="@dimen/live_dot_padding"
+                        android:textAppearance="?attr/textAppearanceLabelMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant"
+                        app:layout_constraintBaseline_toBaselineOf="@id/type_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/type_label"
+                        tools:text="Upcoming in 6 days" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/screen_padding"
+                    android:layout_marginBottom="@dimen/space_small"
+                    app:dividerInsetEnd="@dimen/screen_padding"
+                    app:dividerInsetStart="@dimen/screen_padding" />
+
+                <!-- The 18dp icons scale up to 24dp here, which a compound drawable cannot. -->
+                <LinearLayout
+                    style="@style/Widget.EventTracker.DetailRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="@dimen/detail_icon_size"
+                        android:layout_height="@dimen/detail_icon_size"
+                        android:layout_marginEnd="@dimen/detail_icon_margin"
                         android:importantForAccessibility="no"
-                        tools:text="24" />
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_event"
+                        app:tint="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                        android:id="@+id/event_date"
+                        style="@style/Widget.EventTracker.DetailValue"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        tools:text="Saturday 24 October 2026" />
+                </LinearLayout>
+
+                <!-- Read out as one sentence, with the length and any next day. -->
+                <LinearLayout
+                    android:id="@+id/time_row"
+                    style="@style/Widget.EventTracker.DetailRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:screenReaderFocusable="true">
+
+                    <ImageView
+                        android:layout_width="@dimen/detail_icon_size"
+                        android:layout_height="@dimen/detail_icon_size"
+                        android:layout_marginEnd="@dimen/detail_icon_margin"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_schedule"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/space_medium"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/event_day_of_week"
+                        <!-- A raised +1 marks an end on the next day, as on the cards. -->
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:importantForAccessibility="no"
-                            android:textAppearance="?attr/textAppearanceTitleMedium"
-                            android:textColor="?attr/colorOnSurface"
-                            tools:text="Saturday" />
+                            android:baselineAligned="false">
+
+                            <TextView
+                                android:id="@+id/event_time"
+                                style="@style/Widget.EventTracker.DetailValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:importantForAccessibility="no"
+                                tools:text="19:00–23:00" />
+
+                            <TextView
+                                android:id="@+id/next_day"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/space_tiny"
+                                android:importantForAccessibility="no"
+                                android:text="@string/next_day_marker"
+                                android:textAppearance="?attr/textAppearanceLabelSmall"
+                                android:textColor="?attr/colorPrimary"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/event_month"
+                            android:id="@+id/event_length"
                             style="@style/Widget.EventTracker.DetailSupporting"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:importantForAccessibility="no"
-                            tools:text="October 2026" />
+                            tools:text="4 hr" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- The timeline's dots sit in the icon column of the rows below. -->
-                <ImageView
-                    android:id="@+id/start_dot"
-                    android:layout_width="@dimen/detail_icon_size"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_time_start"
-                    app:layout_constraintBottom_toBottomOf="@id/start_time"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/start_time" />
-
-                <TextView
-                    android:id="@+id/start_label"
-                    style="@style/Widget.EventTracker.DetailLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/detail_icon_margin"
-                    android:layout_marginTop="@dimen/screen_padding"
-                    android:importantForAccessibility="no"
-                    android:text="@string/label_start_time"
-                    app:layout_constraintStart_toEndOf="@id/start_dot"
-                    app:layout_constraintTop_toBottomOf="@id/date_row" />
-
-                <TextView
-                    android:id="@+id/start_time"
-                    style="@style/Widget.EventTracker.DetailTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    app:layout_constraintStart_toStartOf="@id/start_label"
-                    app:layout_constraintTop_toBottomOf="@id/start_label"
-                    tools:text="19:00" />
-
-                <TextView
-                    android:id="@+id/event_length"
-                    style="@style/Widget.EventTracker.DetailSupporting"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_small"
-                    android:importantForAccessibility="no"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/start_label"
-                    app:layout_constraintTop_toBottomOf="@id/start_time"
-                    tools:text="4 hr" />
-
-                <TextView
-                    android:id="@+id/end_label"
-                    style="@style/Widget.EventTracker.DetailLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_small"
-                    android:importantForAccessibility="no"
-                    android:text="@string/label_end_time"
-                    app:layout_constraintStart_toStartOf="@id/start_label"
-                    app:layout_constraintTop_toBottomOf="@id/event_length" />
-
-                <TextView
-                    android:id="@+id/end_time"
-                    style="@style/Widget.EventTracker.DetailTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    app:layout_constraintStart_toStartOf="@id/start_label"
-                    app:layout_constraintTop_toBottomOf="@id/end_label"
-                    tools:text="23:00" />
-
-                <!-- Raised beside the end time, like the +1 on the card. -->
-                <TextView
-                    android:id="@+id/next_day"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_tiny"
-                    android:importantForAccessibility="no"
-                    android:text="@string/next_day_marker"
-                    android:textAppearance="?attr/textAppearanceLabelMedium"
-                    android:textColor="?attr/colorPrimary"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toEndOf="@id/end_time"
-                    app:layout_constraintTop_toTopOf="@id/end_time"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/end_date"
-                    style="@style/Widget.EventTracker.DetailSupporting"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    android:textColor="?attr/colorPrimary"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/start_label"
-                    app:layout_constraintTop_toBottomOf="@id/end_time"
-                    tools:text="Sunday 25 October 2026"
-                    tools:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/end_dot"
-                    android:layout_width="@dimen/detail_icon_size"
-                    android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_time_end"
-                    app:layout_constraintBottom_toBottomOf="@id/end_time"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/end_time" />
-
-                <View
-                    android:layout_width="@dimen/timeline_width"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="@dimen/space_extra_small"
-                    android:layout_marginBottom="@dimen/space_extra_small"
-                    android:background="?attr/colorOutlineVariant"
-                    app:layout_constraintBottom_toTopOf="@id/end_dot"
-                    app:layout_constraintEnd_toEndOf="@id/start_dot"
-                    app:layout_constraintStart_toStartOf="@id/start_dot"
-                    app:layout_constraintTop_toBottomOf="@id/start_dot" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/place_divider"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_padding"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/time_block" />
-
-            <LinearLayout
-                android:id="@+id/location_row"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_padding"
-                android:screenReaderFocusable="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/place_divider">
-
-                <ImageView
-                    android:layout_width="@dimen/detail_icon_size"
-                    android:layout_height="@dimen/detail_icon_size"
-                    android:layout_marginTop="@dimen/space_small"
-                    android:layout_marginEnd="@dimen/detail_icon_margin"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_place"
-                    app:tint="?attr/colorOnSurfaceVariant" />
-
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    style="@style/Widget.EventTracker.DetailRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <TextView
-                        style="@style/Widget.EventTracker.DetailLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_location" />
+                    <ImageView
+                        android:layout_width="@dimen/detail_icon_size"
+                        android:layout_height="@dimen/detail_icon_size"
+                        android:layout_marginEnd="@dimen/detail_icon_margin"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_place"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/event_location"
                         style="@style/Widget.EventTracker.DetailValue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         tools:text="Greenwich Campus" />
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/organizer_row"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/screen_padding"
-                android:screenReaderFocusable="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/location_row">
-
-                <ImageView
-                    android:layout_width="@dimen/detail_icon_size"
-                    android:layout_height="@dimen/detail_icon_size"
-                    android:layout_marginTop="@dimen/space_small"
-                    android:layout_marginEnd="@dimen/detail_icon_margin"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/ic_person"
-                    app:tint="?attr/colorOnSurfaceVariant" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    style="@style/Widget.EventTracker.DetailRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    <TextView
-                        style="@style/Widget.EventTracker.DetailLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_organizer" />
+                    <ImageView
+                        android:layout_width="@dimen/detail_icon_size"
+                        android:layout_height="@dimen/detail_icon_size"
+                        android:layout_marginEnd="@dimen/detail_icon_margin"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_person"
+                        app:tint="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/event_organizer"
                         style="@style/Widget.EventTracker.DetailValue"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         tools:text="Google UK" />
                 </LinearLayout>
             </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
